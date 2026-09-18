@@ -1,0 +1,456 @@
+/* Publishing only: inherit the forum shell, panel inset, font and quiet input treatment. */
+.publishing-panel .pub-media input[type="file"] {
+  display: none;
+}
+.forum-app .publishing-panel .page-heading {
+  border-bottom: 1px solid var(--line, #e3eaee);
+  padding-bottom: 22px;
+}
+.forum-app .publishing-panel .page-heading h1 {
+  font-weight: 500;
+}
+.forum-app .publishing-panel .publishing-form {
+  padding-top: 22px;
+  padding-bottom: 0;
+}
+.publishing-panel .pub-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 22px;
+}
+.publishing-panel .pub-board {
+  width: 190px;
+}
+.publishing-panel .pub-field {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  min-width: 0;
+}
+.publishing-panel .pub-field > label,
+.publishing-panel .pub-label {
+  font-size: 14px;
+  line-height: 20px;
+  color: #7991a4;
+  display: flex;
+  gap: 6px;
+  align-items: baseline;
+  font-weight: 400;
+}
+.publishing-panel .pub-field small {
+  font-size: 12px;
+  color: #a1adb6;
+  font-weight: 400;
+}
+.publishing-panel .pub-required {
+  font-size: 12px;
+  color: #b18f7c;
+  font-weight: 400;
+}
+.publishing-panel .pub-required[hidden] {
+  display: none;
+}
+.publishing-panel .pub-count {
+  font-size: 12px;
+  line-height: 18px;
+  color: #9cabb6;
+  align-self: flex-end;
+}
+.forum-app .publishing-panel .pub-input,
+.forum-app .publishing-panel .field-control {
+  box-sizing: border-box;
+  display: block;
+  width: 100%;
+  min-width: 0;
+  height: 46px;
+  border: 1px solid #dfe7ec;
+  border-radius: 5px;
+  padding: 11px 13px;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 22px;
+  color: #36576d;
+  outline: none;
+  box-shadow: none;
+  background: #fdfefe;
+  margin: 0;
+}
+.forum-app .publishing-panel .field-control {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  text-align: left;
+}
+.forum-app .publishing-panel .field-control .control-value {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.forum-app .publishing-panel .field-control > svg {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  color: #869dac;
+}
+.forum-app .publishing-panel .pub-input:is(:hover, :active, :focus) {
+  background: #fdfefe;
+  box-shadow: none;
+  outline: none;
+}
+.forum-app .publishing-panel .pub-input:focus-visible {
+  border-color: #97b1c4;
+}
+.forum-app
+  .publishing-panel
+  .field-control:is(:hover, [aria-expanded="true"], :focus-visible) {
+  background: #f7fafb;
+  border-color: #ccdce6;
+  box-shadow: none;
+  outline: none;
+}
+.forum-app .publishing-panel .field-control:disabled,
+.forum-app .publishing-panel .pub-input:disabled {
+  background: #f8fafb;
+  color: #a1afb9;
+  cursor: default;
+}
+.forum-app .publishing-panel textarea.pub-input {
+  height: 150px;
+  min-height: 120px;
+  resize: vertical;
+  line-height: 1.85;
+}
+.forum-app .publishing-panel .pub-input::placeholder,
+.forum-app .publishing-panel .field-control.empty-value {
+  color: #9baab5;
+}
+.forum-app .publishing-panel [aria-invalid="true"] {
+  border-color: #ba9583;
+}
+.publishing-panel .pub-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 18px;
+  align-items: start;
+}
+.publishing-panel .pub-title-grid {
+  grid-template-columns: minmax(0, 1fr) 178px;
+}
+.publishing-panel .pub-space {
+  margin-top: 18px;
+}
+.publishing-panel .pub-section {
+  padding: 0 0 24px;
+  margin: 0;
+}
+.publishing-panel .pub-section + .pub-section {
+  border-top: 1px solid #e3eaee;
+  padding-top: 22px;
+}
+.publishing-panel .pub-section h2 {
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 24px;
+  color: #4d6a80;
+  margin: 0 0 18px;
+}
+.publishing-panel .pub-mode-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 26px;
+}
+.publishing-panel .pub-required-note {
+  font-size: 12px;
+  color: #9baab5;
+}
+.publishing-panel .pub-segmented {
+  display: inline-flex;
+  width: fit-content;
+  align-items: center;
+  gap: 3px;
+  max-width: 100%;
+  padding: 3px;
+  border: 1px solid #e5ebf0;
+  background: #f4f7f9;
+  border-radius: 6px;
+}
+.publishing-panel .pub-segmented button {
+  height: 34px;
+  padding: 0 17px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  font-size: 14px;
+  line-height: 20px;
+  color: #8a9dab;
+  background: transparent;
+}
+.publishing-panel .pub-segmented button[aria-pressed="true"] {
+  color: #446f99;
+  background: #fff;
+  border-color: #dce6ed;
+}
+.publishing-panel .pub-price-row {
+  display: flex;
+  gap: 18px;
+  align-items: center;
+  margin: 18px 0;
+}
+.publishing-panel .pub-price-row > .pub-field {
+  width: min(320px, 70%);
+}
+.publishing-panel .pub-check {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 13px;
+  line-height: 20px;
+  color: #8297a8;
+  white-space: nowrap;
+  width: fit-content;
+}
+.publishing-panel .pub-check input {
+  width: 14px;
+  height: 14px;
+  accent-color: #557e9f;
+  margin: 0;
+}
+.publishing-panel .pub-price-row > .pub-check {
+  margin-top: 29px;
+}
+.publishing-panel .pub-error {
+  font-size: 12px;
+  color: #a16e5d;
+  line-height: 1.6;
+  margin: 0;
+}
+.publishing-panel .pub-more {
+  margin-top: 18px;
+  color: #7d95a7;
+  font-size: 13px;
+}
+.publishing-panel .pub-more summary {
+  cursor: pointer;
+  padding: 8px 0;
+}
+.publishing-panel .pub-more > .pub-field {
+  margin-top: 12px;
+  max-width: 300px;
+}
+.publishing-panel .pub-media-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.publishing-panel .pub-media-tile {
+  width: 110px;
+  height: 104px;
+  position: relative;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  border: 1px solid #e3eaee;
+  border-radius: 5px;
+  background: #f5f8f9;
+  color: #8ca0af;
+}
+.publishing-panel .pub-media-tile img {
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+}
+.publishing-panel .pub-media-tile button {
+  position: absolute;
+  right: 4px;
+  top: 4px;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 50%;
+  background: #ffffffed;
+  color: #8297a8;
+}
+.publishing-panel .pub-cover,
+.publishing-panel .pub-media-error {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 3px 6px;
+  font-size: 11px;
+  text-align: center;
+  background: #64818fa6;
+  color: #fff;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.publishing-panel .pub-add-media {
+  width: 110px;
+  height: 104px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 9px;
+  background: #f9fbfc;
+  border: 1px dashed #cfdde5;
+  border-radius: 5px;
+  color: #8ca0af;
+  font-size: 12px;
+}
+.publishing-panel .pub-media-side {
+  font-size: 12px;
+  line-height: 1.8;
+  color: #9babb6;
+}
+.publishing-panel .pub-upload-limits {
+  margin: 9px 0 0;
+  color: #9babb6;
+  font-size: 12px;
+  line-height: 20px;
+}
+.publishing-panel .pub-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border-top: 1px solid #e3eaee;
+  padding: 20px 0;
+}
+.publishing-panel .pub-draft-note {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  line-height: 20px;
+  color: #a0afb8;
+}
+.publishing-panel .pub-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+.publishing-panel .pub-actions :is(.primary, .secondary) {
+  min-height: 40px;
+  padding: 9px 16px;
+  font-size: 14px;
+  line-height: 20px;
+}
+.publishing-panel .pub-actions .help-button {
+  width: 28px;
+  height: 32px;
+  padding: 0;
+  display: grid;
+  place-items: center;
+  border: 0;
+  background: transparent;
+  color: #91a6b5;
+}
+.publishing-popup,
+.publishing-tooltip {
+  box-sizing: border-box;
+  font-family: Montserrat, "PingFang SC", "Microsoft YaHei", sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  font-weight: 400;
+}
+.publishing-popup button {
+  font: inherit;
+  color: inherit;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  padding: 0;
+}
+.publishing-popup svg,
+.publishing-tooltip svg {
+  flex-shrink: 0;
+}
+.publishing-popup .calendar-grid td button,
+.publishing-popup .year-grid button {
+  font-family: inherit;
+}
+.publishing-popup .choice-option {
+  padding: 9px 11px;
+  font-size: 14px;
+  min-height: 40px;
+}
+.publishing-popup .calendar-heading {
+  font-size: 14px;
+}
+.publishing-popup .calendar-bottom button {
+  padding: 4px 7px;
+}
+.publishing-popup .datetime-confirm {
+  background: #557e9f;
+  color: #fff;
+  font-size: 13px;
+}
+.publishing-popup [disabled] {
+  cursor: default;
+}
+@media (max-width: 1100px) {
+  .publishing-panel .pub-time-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .publishing-panel .pub-title-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .publishing-panel .pub-bottom {
+    flex-wrap: wrap;
+  }
+  .publishing-panel .pub-actions {
+    margin-left: auto;
+  }
+}
+@media (max-width: 520px) {
+  .publishing-panel .pub-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .publishing-panel .pub-top {
+    align-items: flex-end;
+  }
+  .publishing-panel .pub-board {
+    width: min(170px, 58%);
+  }
+  .publishing-panel .draft-status {
+    font-size: 11px;
+    white-space: nowrap;
+  }
+  .publishing-panel .pub-actions {
+    gap: 6px;
+  }
+  .publishing-panel .pub-actions :is(.primary, .secondary) {
+    padding: 9px 12px;
+  }
+  .publishing-panel .pub-media-side {
+    font-size: 11px;
+  }
+  .publishing-panel .pub-required-note {
+    font-size: 11px;
+  }
+}
+@media (forced-colors: active) {
+  .publishing-panel :is(input, textarea, button):focus-visible,
+  .publishing-popup button:focus-visible {
+    outline: 1px solid Highlight;
+  }
+  .publishing-popup .time-wheel:focus-visible {
+    outline: 1px solid Highlight;
+  }
+  .publishing-popup [aria-selected="true"] {
+    background: Highlight;
+    color: HighlightText;
+  }
+}

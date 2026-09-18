@@ -1,0 +1,848 @@
+:is(.publishing-panel, .publishing-popup, .publishing-tooltip) .help-anchor {
+  display: inline-flex;
+  align-items: center;
+}
+:is(.publishing-panel, .publishing-popup, .publishing-tooltip) .help-button {
+  height: 24px;
+  width: 24px;
+  border-radius: 50%;
+  padding: 3px;
+  color: #9daeba;
+  display: inline-grid;
+  place-items: center;
+  margin-left: -3px;
+}
+:is(.publishing-panel, .publishing-popup, .publishing-tooltip)
+  .help-button
+  svg {
+  width: 16px;
+  height: 16px;
+}
+:is(.publishing-panel, .publishing-popup, .publishing-tooltip)
+  .help-button:hover {
+  color: #6084a1;
+  background: #eff4f7;
+}
+:is(.publishing-panel, .publishing-popup, .publishing-tooltip)
+  .help-button:focus-visible {
+  outline: 1px solid #9bb2c3;
+  outline-offset: 1px;
+}
+:is(.publishing-panel, .publishing-popup, .publishing-tooltip)
+  .compact-media-description
+  .field-footer
+  > .help-anchor:first-child {
+  display: inline-flex;
+}
+:is(.publishing-panel, .publishing-popup, .publishing-tooltip) .media-helper {
+  min-height: 20px;
+  margin-top: 5px;
+}
+:is(.publishing-panel, .publishing-popup, .publishing-tooltip) .field-control {
+  width: 100%;
+  height: 46px;
+  border: 1px solid #dfe7ec;
+  border-radius: 5px;
+  background: #fdfefe;
+  padding: 11px 13px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  text-align: left;
+  font-size: 14px;
+  line-height: 22px;
+}
+:is(.publishing-panel, .publishing-popup, .publishing-tooltip)
+  .field-control:hover,
+:is(.publishing-panel, .publishing-popup, .publishing-tooltip)
+  .field-control[aria-expanded="true"] {
+  background: #f7fafb;
+  border-color: #ccdce6;
+}
+:is(.publishing-panel, .publishing-popup, .publishing-tooltip)
+  .field-control:focus-visible {
+  outline: none;
+  border-color: #97b1c4;
+}
+:is(.publishing-panel, .publishing-popup, .publishing-tooltip)
+  .field-control
+  > svg {
+  width: 16px;
+  height: 16px;
+  color: #869dac;
+}
+:is(.publishing-panel, .publishing-popup, .publishing-tooltip)
+  .field-control[aria-expanded="true"]
+  > .control-chevron {
+  transform: rotate(180deg);
+}
+:is(.publishing-panel, .publishing-popup, .publishing-tooltip) .control-value {
+  min-width: 0;
+}
+:is(.publishing-panel, .publishing-popup, .publishing-tooltip).control-popover {
+  position: fixed;
+  z-index: 80;
+  background: #fff;
+  border: 1px solid #dde7ed;
+  border-radius: 6px;
+  box-shadow: 0 6px 22px #314f6312;
+  overflow: hidden;
+  color: #52718b;
+}
+:is(.publishing-panel, .publishing-popup, .publishing-tooltip).option-popover {
+  padding: 5px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: #c9d7e1 transparent;
+}
+:is(.publishing-panel, .publishing-popup, .publishing-tooltip) .choice-option {
+  min-height: 39px;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 9px;
+  border-radius: 3px;
+  padding: 9px 11px;
+  text-align: left;
+  font-size: 13px;
+}
+:is(.publishing-panel, .publishing-popup, .publishing-tooltip)
+  .choice-option[aria-selected="true"] {
+  color: #416f98;
+  background: #edf4f8;
+}
+:is(.publishing-panel, .publishing-popup, .publishing-tooltip)
+  .choice-option:hover,
+:is(.publishing-panel, .publishing-popup, .publishing-tooltip)
+  .choice-option:focus-visible {
+  background: #f1f6f9;
+  outline: none;
+}
+:is(.publishing-panel, .publishing-popup, .publishing-tooltip)
+  .choice-option
+  svg {
+  width: 15px;
+  height: 15px;
+}
+:is(
+  .publishing-panel,
+  .publishing-popup,
+  .publishing-tooltip
+).calendar-popover {
+  width: 304px;
+  padding: 13px 14px 0;
+}
+:is(.publishing-panel, .publishing-popup, .publishing-tooltip)
+  .calendar-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 13px;
+  margin-bottom: 11px;
+  color: #58758d;
+}
+:is(.publishing-panel, .publishing-popup, .publishing-tooltip)
+  .calendar-heading
+  button {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 4px;
+  color: #7d97aa;
+}
+:is(.publishing-panel, .publishing-popup, .publishing-tooltip)
+  .calendar-heading
+  button:not(:disabled):hover {
+  background: #edf3f7;
+}
+:is(.publishing-panel, .publishing-popup, .publishing-tooltip)
+  .calendar-heading
+  button:disabled {
+  opacity: 0.28;
+}
+:is(.publishing-panel, .publishing-popup, .publishing-tooltip)
+  .calendar-heading
+  svg {
+  width: 15px;
+  height: 15px;
+}
+:is(.publishing-panel, .publishing-popup, .publishing-tooltip)
+  .calendar-prev
+  svg {
+  transform: rotate(180deg);
+}
+:is(.publishing-panel, .publishing-popup, .publishing-tooltip) .calendar-grid {
+  table-layout: fixed;
+  width: 100%;
+  border-collapse: collapse;
+}
+:is(.publishing-panel, .publishing-popup, .publishing-tooltip)
+  .calendar-grid
+  th {
+  font-size: 11px;
+  font-weight: 400;
+  color: #9aabb8;
+  height: 26px;
+  text-align: center;
+}
+:is(.publishing-panel, .publishing-popup, .publishing-tooltip)
+  .calendar-grid
+  td {
+  text-align: center;
+  height: 37px;
+  padding: 2px;
+}
+:is(.publishing-panel, .publishing-popup, .publishing-tooltip)
+  .calendar-grid
+  td
+  button {
+  height: 32px;
+  width: 32px;
+  display: inline-grid;
+  place-items: center;
+  border-radius: 4px;
+  font-family: Montserrat, "Microsoft YaHei", sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1;
+  border: 1px solid transparent;
+  color: #59748a;
+  padding: 0;
+}
+:is(.publishing-panel, .publishing-popup, .publishing-tooltip)
+  .calendar-grid
+  td
+  button:hover:not(:disabled) {
+  background: #eef4f8;
+}
+:is(.publishing-panel, .publishing-popup, .publishing-tooltip)
+  .calendar-grid
+  td
+  button.selected {
+  background: #557e9f;
+  color: white;
+}
+:is(.publishing-panel, .publishing-popup, .publishing-tooltip)
+  .calendar-grid
+  td
+  button.selected:hover {
+  background: #4e7492;
+}
+:is(.publishing-panel, .publishing-popup, .publishing-tooltip)
+  .calendar-grid
+  td
+  button.today {
+  border-color: #a8becd;
+  color: #557e9f;
+}
+:is(.publishing-panel, .publishing-popup, .publishing-tooltip)
+  .calendar-grid
+  td
+  button.today.selected {
+  color: #fff;
+  border-color: #557e9f;
+}
+:is(.publishing-panel, .publishing-popup, .publishing-tooltip)
+  .calendar-grid
+  td
+  button.adjacent {
+  color: #b3bfc8;
+}
+:is(.publishing-panel, .publishing-popup, .publishing-tooltip)
+  .calendar-grid
+  td
+  button:disabled {
+  color: #c4cdd4;
+  opacity: 1;
+  cursor: default;
+}
+:is(.publishing-panel, .publishing-popup, .publishing-tooltip)
+  .calendar-grid
+  td
+  button:focus-visible {
+  outline: 1px solid #6c90ac;
+  outline-offset: 1px;
+}
+:is(.publishing-panel, .publishing-popup, .publishing-tooltip)
+  .calendar-bottom {
+  border-top: 1px solid #e8edf1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 8px;
+  padding: 9px 0;
+  font-size: 10px;
+  color: #9dadb8;
+}
+:is(.publishing-panel, .publishing-popup, .publishing-tooltip)
+  .calendar-bottom
+  button {
+  font-size: 12px;
+  color: #6084a1;
+  padding: 4px 7px;
+  margin-left: -5px;
+  border-radius: 3px;
+}
+:is(.publishing-panel, .publishing-popup, .publishing-tooltip)
+  .calendar-bottom
+  button:hover {
+  background: #eff4f7;
+}
+:is(.publishing-panel, .publishing-popup, .publishing-tooltip)
+  .calendar-bottom
+  b {
+  font-weight: 400;
+  color: #889dab;
+  margin-left: 4px;
+}
+:is(.publishing-panel, .publishing-popup, .publishing-tooltip).hint-bubble {
+  position: fixed;
+  z-index: 90;
+  width: max-content;
+  max-width: min(310px, calc(100vw - 24px));
+  background: #fff;
+  border: 1px solid #dfe7ec;
+  border-radius: 6px;
+  box-shadow: 0 5px 20px #2a4b6012;
+  color: #728b9e;
+  padding: 12px 14px;
+  font-size: 12px;
+  line-height: 1.8;
+  overflow-wrap: anywhere;
+  cursor: default;
+}
+:is(
+    .publishing-panel,
+    .publishing-popup,
+    .publishing-tooltip
+  ).hint-bubble:before {
+  content: "";
+  position: absolute;
+  left: var(--hint-arrow, 15px);
+  width: 7px;
+  height: 7px;
+  background: #fff;
+  transform: translateX(-50%) rotate(45deg);
+}
+:is(
+    .publishing-panel,
+    .publishing-popup,
+    .publishing-tooltip
+  ).hint-bubble[data-side="bottom"]:before {
+  top: -4px;
+  border-left: 1px solid #dfe7ec;
+  border-top: 1px solid #dfe7ec;
+}
+:is(
+    .publishing-panel,
+    .publishing-popup,
+    .publishing-tooltip
+  ).hint-bubble[data-side="top"]:before {
+  bottom: -4px;
+  border-right: 1px solid #dfe7ec;
+  border-bottom: 1px solid #dfe7ec;
+}
+@media (max-width: 720px) {
+  .calendar-popover {
+    width: min(304px, calc(100vw - 24px));
+  }
+  :is(.publishing-panel, .publishing-popup, .publishing-tooltip) .price-group {
+    max-width: none;
+  }
+  :is(.publishing-panel, .publishing-popup, .publishing-tooltip) .help-button {
+    height: 28px;
+    width: 28px;
+    margin-left: -5px;
+  }
+  :is(.publishing-panel, .publishing-popup, .publishing-tooltip)
+    .field-control {
+    font-size: 13px;
+  }
+}
+:is(.publishing-panel,.publishing-popup,.publishing-tooltip) /* A single publishing hint; file limits stay visible. */
+.form-actions {
+  align-items: center;
+}
+:is(.publishing-panel, .publishing-popup, .publishing-tooltip)
+  .form-actions
+  > .help-anchor {
+  margin-right: 5px;
+}
+:is(.publishing-panel, .publishing-popup, .publishing-tooltip)
+  .form-actions
+  .help-button {
+  width: 28px;
+  height: 28px;
+  margin: 0;
+}
+:is(.publishing-panel, .publishing-popup, .publishing-tooltip)
+  .form-actions
+  .help-button
+  svg {
+  width: 16px;
+  height: 16px;
+}
+:is(.publishing-panel, .publishing-popup, .publishing-tooltip) .upload-limits {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px 12px;
+  color: #9dacb7;
+  font-size: 11px;
+  line-height: 1.8;
+  margin: 8px 0 0;
+}
+:is(.publishing-panel, .publishing-popup, .publishing-tooltip)
+  .upload-limits
+  > span {
+  white-space: nowrap;
+}
+:is(.publishing-panel, .publishing-popup, .publishing-tooltip)
+  .compact-media-description
+  .upload-limits {
+  font-size: 10px;
+  gap: 0 6px;
+  max-width: 132px;
+}
+:is(.publishing-panel, .publishing-popup, .publishing-tooltip)
+  .calendar-heading
+  .calendar-year-toggle {
+  width: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 9px;
+  color: #58758d;
+  font-size: 13px;
+}
+:is(.publishing-panel, .publishing-popup, .publishing-tooltip)
+  .calendar-year-toggle
+  > svg {
+  width: 12px;
+  height: 12px;
+}
+:is(.publishing-panel, .publishing-popup, .publishing-tooltip) .years-prev svg {
+  transform: rotate(180deg);
+}
+:is(.publishing-panel, .publishing-popup, .publishing-tooltip) .year-grid {
+  height: 248px;
+  display: grid;
+  grid-template-rows: repeat(4, minmax(0, 1fr));
+  gap: 7px;
+  padding: 6px 0;
+}
+:is(.publishing-panel, .publishing-popup, .publishing-tooltip)
+  .year-grid
+  > [role="row"] {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 7px;
+  align-items: center;
+}
+:is(.publishing-panel, .publishing-popup, .publishing-tooltip)
+  .year-grid
+  [role="gridcell"] {
+  min-width: 0;
+}
+:is(.publishing-panel, .publishing-popup, .publishing-tooltip)
+  .year-grid
+  button {
+  height: 40px;
+  width: 100%;
+  border-radius: 4px;
+  border: 1px solid transparent;
+  font-family: Montserrat, "Microsoft YaHei", sans-serif;
+  font-size: 12px;
+  color: #6b879b;
+}
+:is(.publishing-panel, .publishing-popup, .publishing-tooltip)
+  .year-grid
+  button:not(:disabled):hover {
+  background: #eef4f8;
+}
+:is(.publishing-panel, .publishing-popup, .publishing-tooltip)
+  .year-grid
+  button.selected {
+  background: #557e9f;
+  color: white;
+}
+:is(.publishing-panel, .publishing-popup, .publishing-tooltip)
+  .year-grid
+  button.selected:hover {
+  background: #4e7492;
+}
+:is(.publishing-panel, .publishing-popup, .publishing-tooltip)
+  .year-grid
+  button:disabled {
+  color: #c4cdd4;
+  opacity: 1;
+  cursor: default;
+}
+:is(.publishing-panel, .publishing-popup, .publishing-tooltip)
+  .year-grid
+  button:focus-visible {
+  outline: 1px solid #6c90ac;
+  outline-offset: 1px;
+}
+:is(.publishing-panel,.publishing-popup,.publishing-tooltip) /* Shared date and date/time picker: one calendar,:is(.publishing-panel,.publishing-popup,.publishing-tooltip) optional time wheels. */
+.empty-value {
+  color: #9baab5;
+}
+:is(.publishing-panel, .publishing-popup, .publishing-tooltip)
+  .calendar-bottom
+  .calendar-today {
+  margin-left: 0;
+  margin-right: -5px;
+}
+:is(
+  .publishing-panel,
+  .publishing-popup,
+  .publishing-tooltip
+).datetime-popover {
+  padding: 0;
+  width: 468px;
+  display: grid;
+  grid-template-columns: 304px 164px;
+  align-items: stretch;
+}
+:is(.publishing-panel, .publishing-popup, .publishing-tooltip).datetime-popover
+  .calendar-panel {
+  padding: 13px 14px 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+:is(.publishing-panel, .publishing-popup, .publishing-tooltip).datetime-popover
+  .calendar-bottom {
+  margin-top: auto;
+}
+:is(.publishing-panel, .publishing-popup, .publishing-tooltip).datetime-popover
+  .calendar-heading {
+  flex-shrink: 0;
+}
+:is(.publishing-panel, .publishing-popup, .publishing-tooltip).datetime-popover
+  .calendar-grid {
+  margin-bottom: 8px;
+}
+:is(.publishing-panel, .publishing-popup, .publishing-tooltip).datetime-popover
+  .year-grid {
+  flex-shrink: 0;
+  margin-bottom: 8px;
+}
+:is(.publishing-panel, .publishing-popup, .publishing-tooltip) .time-panel {
+  padding: 13px 12px 12px;
+  border-left: 1px solid #e8edf1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+:is(.publishing-panel, .publishing-popup, .publishing-tooltip) .time-heading {
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-size: 13px;
+  color: #58758d;
+  margin-bottom: 11px;
+}
+:is(.publishing-panel, .publishing-popup, .publishing-tooltip)
+  .time-heading
+  svg {
+  height: 14px;
+  width: 14px;
+  color: #869dac;
+}
+:is(.publishing-panel, .publishing-popup, .publishing-tooltip) .time-wheels {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+:is(.publishing-panel, .publishing-popup, .publishing-tooltip)
+  .time-wheel-group {
+  min-width: 0;
+  text-align: center;
+}
+:is(.publishing-panel, .publishing-popup, .publishing-tooltip) .time-unit {
+  height: 26px;
+  display: grid;
+  place-items: center;
+  font-size: 11px;
+  color: #9aabb8;
+}
+:is(.publishing-panel, .publishing-popup, .publishing-tooltip)
+  .time-wheel-frame {
+  position: relative;
+  border-radius: 4px;
+  overflow: hidden;
+}
+:is(.publishing-panel, .publishing-popup, .publishing-tooltip)
+  .time-wheel-frame:before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 72px;
+  height: 36px;
+  pointer-events: none;
+  background: #edf4f8;
+  border-radius: 4px;
+}
+:is(.publishing-panel, .publishing-popup, .publishing-tooltip) .time-wheel {
+  height: 180px;
+  padding: 72px 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scroll-snap-type: none;
+  scrollbar-width: none;
+  position: relative;
+  outline: none;
+}
+:is(.publishing-panel, .publishing-popup, .publishing-tooltip)
+  .time-wheel::-webkit-scrollbar {
+  display: none;
+}
+:is(.publishing-panel, .publishing-popup, .publishing-tooltip)
+  .time-wheel:focus-visible {
+  outline: none;
+  box-shadow: none;
+}
+:is(.publishing-panel, .publishing-popup, .publishing-tooltip) .time-option {
+  height: 36px;
+  display: grid;
+  place-items: center;
+  font-size: 12px;
+  line-height: 1;
+  color: #8a9fac;
+  cursor: pointer;
+  user-select: none;
+  font-variant-numeric: tabular-nums;
+}
+:is(.publishing-panel, .publishing-popup, .publishing-tooltip)
+  .time-option[aria-selected="true"] {
+  color: #426f94;
+  font-weight: 500;
+}
+:is(.publishing-panel, .publishing-popup, .publishing-tooltip)
+  .time-option:hover {
+  color: #426f94;
+}
+:is(.publishing-panel, .publishing-popup, .publishing-tooltip)
+  .datetime-confirm {
+  height: 32px;
+  min-height: 32px;
+  width: 100%;
+  border-radius: 4px;
+  background: #557e9f;
+  color: #fff;
+  font-size: 12px;
+  margin-top: 12px;
+}
+:is(.publishing-panel, .publishing-popup, .publishing-tooltip)
+  .datetime-confirm:hover {
+  background: #4e7492;
+}
+:is(
+    .publishing-panel,
+    .publishing-popup,
+    .publishing-tooltip
+  ).datetime-popover[data-view="years"] {
+  min-height: 0;
+}
+:is(.publishing-panel, .publishing-popup, .publishing-tooltip)
+  .time-panel
+  .datetime-confirm {
+  margin-top: auto;
+}
+:is(.publishing-panel, .publishing-popup, .publishing-tooltip) .time-wheels {
+  margin-bottom: 12px;
+}
+:is(
+  .publishing-panel,
+  .publishing-popup,
+  .publishing-tooltip
+).calendar-popover {
+  max-height: calc(100vh - 24px);
+  overflow-y: auto;
+}
+:is(.publishing-panel, .publishing-popup, .publishing-tooltip).datetime-popover
+  .control-value {
+  white-space: nowrap;
+}
+@media (max-width: 500px) {
+  .datetime-popover {
+    width: min(468px, calc(100vw - 24px));
+    grid-template-columns: minmax(0, 1fr) 112px;
+  }
+  :is(
+      .publishing-panel,
+      .publishing-popup,
+      .publishing-tooltip
+    ).datetime-popover
+    .calendar-panel {
+    padding: 11px 9px 0;
+  }
+  :is(
+      .publishing-panel,
+      .publishing-popup,
+      .publishing-tooltip
+    ).datetime-popover
+    .calendar-grid
+    td {
+    padding: 1px;
+  }
+  :is(
+      .publishing-panel,
+      .publishing-popup,
+      .publishing-tooltip
+    ).datetime-popover
+    .calendar-grid
+    td
+    button {
+    width: 28px;
+    height: 30px;
+  }
+  :is(
+      .publishing-panel,
+      .publishing-popup,
+      .publishing-tooltip
+    ).datetime-popover
+    .calendar-heading
+    .calendar-year-toggle {
+    font-size: 12px;
+    padding: 0 3px;
+    gap: 3px;
+  }
+  :is(
+      .publishing-panel,
+      .publishing-popup,
+      .publishing-tooltip
+    ).datetime-popover
+    .calendar-heading
+    button {
+    width: 24px;
+  }
+  :is(.publishing-panel, .publishing-popup, .publishing-tooltip) .time-panel {
+    padding: 11px 8px 10px;
+  }
+  :is(.publishing-panel, .publishing-popup, .publishing-tooltip) .time-wheels {
+    gap: 4px;
+  }
+  :is(.publishing-panel, .publishing-popup, .publishing-tooltip) .time-heading {
+    font-size: 12px;
+  }
+  :is(
+      .publishing-panel,
+      .publishing-popup,
+      .publishing-tooltip
+    ).datetime-popover
+    .year-grid
+    > [role="row"] {
+    gap: 3px;
+  }
+}
+@media (max-width: 500px) {
+  .datetime-popover .calendar-heading .calendar-year-toggle {
+    width: auto;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  :is(
+      .publishing-panel,
+      .publishing-popup,
+      .publishing-tooltip
+    ).datetime-popover
+    .calendar-heading
+    > button {
+    flex-shrink: 0;
+  }
+  :is(
+      .publishing-panel,
+      .publishing-popup,
+      .publishing-tooltip
+    ).datetime-popover
+    .calendar-grid
+    td
+    button {
+    width: 100%;
+    max-width: 28px;
+  }
+  :is(
+      .publishing-panel,
+      .publishing-popup,
+      .publishing-tooltip
+    ).datetime-popover
+    .calendar-heading {
+    gap: 0;
+  }
+}
+@media (max-width: 370px) {
+  .datetime-popover {
+    grid-template-columns: minmax(0, 1fr) 100px;
+  }
+  :is(
+      .publishing-panel,
+      .publishing-popup,
+      .publishing-tooltip
+    ).datetime-popover
+    .calendar-panel {
+    padding-left: 7px;
+    padding-right: 7px;
+  }
+  :is(
+      .publishing-panel,
+      .publishing-popup,
+      .publishing-tooltip
+    ).datetime-popover
+    .calendar-heading
+    .calendar-year-toggle {
+    font-size: 11px;
+    padding: 0;
+    gap: 0;
+  }
+  :is(
+      .publishing-panel,
+      .publishing-popup,
+      .publishing-tooltip
+    ).datetime-popover
+    .calendar-heading
+    > button {
+    width: 20px;
+  }
+}
+:is(.publishing-panel,.publishing-popup,.publishing-tooltip) /* Mouse dragging follows the pointer; touch keeps native scrolling. */
+.time-wheel,:is(.publishing-panel,.publishing-popup,.publishing-tooltip) .time-wheel .time-option {
+  cursor: grab;
+  user-select: none;
+}
+:is(.publishing-panel, .publishing-popup, .publishing-tooltip)
+  .time-wheel.is-dragging,
+:is(.publishing-panel, .publishing-popup, .publishing-tooltip)
+  .time-wheel.is-dragging
+  .time-option {
+  cursor: grabbing;
+}
+:is(.publishing-panel, .publishing-popup, .publishing-tooltip)
+  .time-option[aria-disabled="true"] {
+  color: #c8d1d8;
+  cursor: default;
+}
+:is(.publishing-panel, .publishing-popup, .publishing-tooltip)
+  .time-option[aria-disabled="true"]:hover {
+  color: #c8d1d8;
+}
+:is(.publishing-panel, .publishing-popup, .publishing-tooltip)
+  .field-control:disabled {
+  opacity: 1;
+  color: #a6b3bc;
+  background: #f8fafb;
+  cursor: default;
+}
+:is(.publishing-panel, .publishing-popup, .publishing-tooltip)
+  .calendar-bottom
+  button:disabled:hover {
+  background: transparent;
+}
