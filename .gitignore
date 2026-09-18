@@ -3,5 +3,6 @@ dist/
 test-results/
 playwright-report/
 artifacts/
+design-previews/
 .npm-cache/
 *.log

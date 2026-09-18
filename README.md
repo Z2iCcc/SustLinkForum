@@ -82,3 +82,7 @@ npm run test:e2e
 视觉与验收记录见 [DESIGN.md](./DESIGN.md) 和 [VERIFICATION.md](./VERIFICATION.md)。
 
 二级分类已接入：点击排序栏右侧分类图标展开筛选，支持发布前选择分类、搜索联动及返回恢复；已发布笔记的分类只读。结构与完整交互见 [SUBCATEGORY_PROPOSAL.md](./SUBCATEGORY_PROPOSAL.md)。界面名称与动效术语见 [UI_GLOSSARY.md](./UI_GLOSSARY.md)。
+
+## 手机版原型
+
+[sustlink-ui-preview/](./sustlink-ui-preview/) 是 SustLink 社区面向手机的 HTML 原型，准备迁入 Kotlin/Compose Android App。它与本目录的桌面论坛**共享品牌与视觉方向，但不是同一套代码**，没有可复用的构建设施，直接双击其中的 `SustLink_整合预览.html` 打开即可。

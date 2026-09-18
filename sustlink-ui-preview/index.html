@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#ffffff">
+  <title>SustLink · 发现校园的每一面</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <aside class="preview-tools" aria-label="预览设置">
+    <div><strong>SustLink<span> / </span>校园社区</strong><small>交互原型 · 数据仅保存在本浏览器</small></div>
+    <div class="width-controls" aria-label="预览宽度"><button data-width="360">360</button><button data-width="390" class="active">390</button><button data-width="430">430</button><span>px</span></div>
+  </aside>
+  <div class="app" id="app">
+    <main id="screen" tabindex="-1"></main>
+    <nav id="bottom-nav" class="bottom-nav" aria-label="主导航"></nav>
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+    <dialog id="sheet" aria-labelledby="sheet-title"></dialog>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>
