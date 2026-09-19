@@ -1,4 +1,4 @@
-import { useState, useRef, type FormEvent } from "react";
+import { useState, useRef, useEffect, type FormEvent } from "react";
 import {
   Link,
   NavLink,
@@ -31,14 +31,24 @@ export function Shell() {
   const [query, setQuery] = useState("");
   const searchInput = useRef<HTMLInputElement>(null);
   const me = state.users.find((u) => u.id === ME)!;
-  const unread = state.notices.filter((n) => !n.read).length;
+  const unread = state.notices.filter((n) => !n.read).length + (state.conversations??[]).reduce((sum,c)=>sum+c.messages.filter(m=>m.authorId!==ME&&m.createdAt>c.readAt).length,0);
   const board = boards.find((b) => location.pathname === `/board/${b.id}`);
+  const detailTopic = state.topics.find(t=>location.pathname==='/topic/'+t.id);
+  const isMarket = board?.id==='market' || detailTopic?.boardId==='market' || location.pathname.startsWith('/messages/chat/');
+  const shellRef=useRef<HTMLDivElement>(null);
+  useEffect(()=>{
+    if(!isMarket)return;
+    const sidebars=shellRef.current?.querySelectorAll<HTMLElement>('.left-sidebar,.right-sidebar');
+    const measure=()=>sidebars?.forEach(el=>el.style.setProperty('--sidebar-top',Math.min(104,window.innerHeight-el.offsetHeight-20)+'px'));
+    const observer=new ResizeObserver(measure);sidebars?.forEach(el=>observer.observe(el));window.addEventListener('resize',measure);measure();
+    return ()=>{observer.disconnect();window.removeEventListener('resize',measure)};
+  },[isMarket]);
   function search(e: FormEvent) {
     e.preventDefault();
     navigate(`/search?q=${encodeURIComponent(query.trim())}`);
   }
   return (
-    <div className="forum-app">
+    <div className={`forum-app ${isMarket?"market-shell":""}`} ref={shellRef}>
       <a className="skip-link" href="#forum-main">
         跳到主要内容
       </a>
@@ -149,7 +159,7 @@ export function Shell() {
             className="primary full new-topic"
             onClick={() => {
               const params = new URLSearchParams(location.search);
-              const selectedBoard = board?.id ?? params.get("board") ?? "";
+              const selectedBoard = board?.id ?? detailTopic?.boardId ?? (isMarket?"market":null) ?? params.get("board") ?? "";
               const category = params.get("category") ?? "";
               const target = new URLSearchParams();
               if (boards.some((b) => b.id === selectedBoard))
@@ -166,7 +176,7 @@ export function Shell() {
             }}
           >
             <Plus size={18} />
-            发布新笔记
+            {isMarket ? "发布闲置" : "发布新笔记"}
           </button>
           <section className="side-panel welcome-panel">
             <p className="eyebrow">A PLACE TO BELONG</p>

@@ -1,3 +1,5 @@
+import { canComment } from "./market/model.ts";
+import { validConversations } from "./messaging/model.ts";
 import type {
   Attachment,
   Draft,
@@ -58,6 +60,7 @@ export function validState(value: unknown): value is ForumState {
   const str = (v: unknown) => typeof v === "string";
   const num = (v: unknown) => typeof v === "number" && Number.isFinite(v);
   if (
+    !validConversations(s.conversations) ||
     s.version !== 1 ||
     typeof s.loggedIn !== "boolean" ||
     !Array.isArray(s.users) ||
@@ -97,7 +100,13 @@ export function validState(value: unknown): value is ForumState {
             ))) &&
         typeof t.pinned === "boolean" &&
         validAttachments(t.attachments) &&
-        validPublishing(t.publishing, t.boardId),
+        validPublishing(t.publishing, t.boardId) &&
+        (!t.market || (
+          (!t.market.commentPolicy || ["everyone", "seller"].includes(t.market.commentPolicy)) &&
+          (!t.market.status || ["active", "withdrawn", "sold"].includes(t.market.status)) &&
+          (t.market.demoImage === undefined || /^\/market-demo\/[a-z]+\.jpg$/.test(t.market.demoImage)) &&
+          (t.market.baseSaves === undefined || (num(t.market.baseSaves) && t.market.baseSaves >= 0))
+        )),
     )
   )
     return false;
@@ -318,6 +327,7 @@ export function addReply(
   if (!state.loggedIn) throw new Error("请先演示登录");
   const topic = state.topics.find((t) => t.id === topicId);
   if (!topic) throw new Error("帖子不存在");
+  if (!canComment(topic, ME)) throw new Error("卖家已关闭公开留言，可通过聊一聊咨询");
   if ((!body.trim() && !attachments.length) || body.trim().length > 3000)
     throw new Error("请填写 1–3000 字的回复");
   if (!validAttachments(attachments)) throw new Error("附件信息无效");

@@ -1,3 +1,6 @@
+import { MarketHome, MarketDetailContent, MarketActions } from "./market/Market";
+import { canComment } from "./market/model";
+import { ConversationList } from "./messaging/Messaging";
 import { useEffect, useState, useRef, type FormEvent } from "react";
 import {
   Link,
@@ -115,6 +118,7 @@ export function ForumHome() {
     setParams(next);
   }
   if (boardId && !board) return <NotFound />;
+  if (boardId === "market") return <MarketHome />;
   return (
     <>
       <div className={`forum-banner ${board ? "board-banner" : ""}`}>
@@ -378,10 +382,13 @@ export function TopicPage() {
   if (!topic) return <NotFound />;
   const board = boards.find((b) => b.id === topic.boardId)!,
     author = identity(state, topic, topic.authorId);
+  const isMarket = topic.boardId === "market";
+  const replyAllowed = canComment(topic, ME);
+  const chatReturn = location.state?.chatReturn;
   const replies = state.replies.filter((r) => r.topicId === topic.id);
   const visible = selectReplies(state, topic, replySort, onlyAuthor);
   function quote(target: string) {
-    if (!requireLogin()) return;
+    if (!requireLogin() || !replyAllowed) return;
     setQuoteId(target);
     setTimeout(() => {
       input.current?.focus();
@@ -432,7 +439,7 @@ export function TopicPage() {
   }
   return (
     <>
-      {hasOrigin ? (
+      {chatReturn && typeof chatReturn.path === 'string' && /^\/messages\/chat\/[^/]+$/.test(chatReturn.path) ? <Link className="breadcrumb compose-back" to={chatReturn.path} state={{restoreScroll:chatReturn.y??0}}><ArrowLeft size={14}/>返回聊天</Link> : hasOrigin ? (
         <button className="breadcrumb compose-back" onClick={exitTopic}>
           <ArrowLeft size={14} />
           {sourceName}
@@ -443,7 +450,7 @@ export function TopicPage() {
           {board.name}
         </Link>
       )}
-      <article className="content-panel topic-detail">
+      <article className={`content-panel topic-detail ${isMarket ? "market-detail" : ""}`}>
         <header className="detail-heading">
           <div className="detail-tags">
             <span className="board-tag" style={{ color: board.color }}>
@@ -469,7 +476,7 @@ export function TopicPage() {
             <Avatar {...author} />
             <div>
               <strong>{author.name}</strong>
-              <span className="author-badge">楼主</span>
+              <span className="author-badge">{isMarket ? "卖家" : "楼主"}</span>
               <small>
                 <time
                   dateTime={new Date(topic.createdAt).toISOString()}
@@ -481,10 +488,10 @@ export function TopicPage() {
             </div>
             <span className="floor-number">#1</span>
           </div>
-          <div className="post-body">{topic.body}</div>
-          <Attachments items={topic.attachments} />
+          {isMarket ? <MarketDetailContent topic={topic}/> : <><div className="post-body">{topic.body}</div><Attachments items={topic.attachments} /></>}
+          {isMarket && <MarketActions topic={topic}/>}
           <div className="post-actions">
-            <button
+            {!isMarket && <><button
               className={`reaction-like ${state.likes.includes(topic.id) ? "is-active" : ""}`}
               aria-pressed={state.likes.includes(topic.id)}
               onClick={() => toggle("likes")}
@@ -504,6 +511,7 @@ export function TopicPage() {
               <Quote size={16} />
               引用
             </button>
+            </>}
             {state.loggedIn && topic.authorId === ME && (
               <button
                 className="delete-note"
@@ -520,7 +528,7 @@ export function TopicPage() {
         </section>
         <div className="replies-heading">
           <h2 ref={repliesHeading} tabIndex={-1}>
-            回复 <span>{replies.length}</span>
+            {isMarket ? "留言" : "回复"} <span>{replies.length}</span>
           </h2>
           <div className="reply-view-controls">
             <ReplySortSelect
@@ -540,7 +548,7 @@ export function TopicPage() {
                 checked={onlyAuthor}
                 onChange={(e) => setOnlyAuthor(e.target.checked)}
               />
-              只看楼主
+              {isMarket ? "只看卖家" : "只看楼主"}
             </label>
           </div>
         </div>
@@ -582,6 +590,7 @@ export function TopicPage() {
                 </button>
                 <button
                   className="reply-quote text-button"
+                  disabled={!replyAllowed}
                   onClick={() => quote(r.id)}
                 >
                   <Quote size={14} />
@@ -604,9 +613,9 @@ export function TopicPage() {
             </section>
           );
         })}
-        <form className="reply-editor" onSubmit={submit}>
+        {replyAllowed ? <form className="reply-editor" onSubmit={submit}>
           <h3>
-            {topic.boardId === "tree" ? "留下一条匿名回复" : "加入这场讨论"}
+            {isMarket ? "向卖家留言" : topic.boardId === "tree" ? "留下一条匿名回复" : "加入这场讨论"}
           </h3>
           {quoteId && (
             <div className="reply-quote-preview">
@@ -669,7 +678,7 @@ export function TopicPage() {
               </button>
             )}
           </div>
-        </form>
+        </form> : <p className="market-comments-closed">卖家已关闭公开留言，可通过「聊一聊」咨询。</p>}
         <dialog
           ref={deleteDialog}
           className="delete-dialog"
@@ -1065,6 +1074,7 @@ export function Messages() {
   if (!state.loggedIn) return <LoginRequired />;
   return (
     <section className="content-panel">
+      <ConversationList />
       <div className="page-heading messages-heading">
         <div>
           <p className="eyebrow">YOU HAVE A LITTLE MAIL</p>

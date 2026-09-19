@@ -137,8 +137,8 @@ export function RouteEffects() {
     if (location.pathname !== "/") document.title = "SustLink · 科大校园社区";
     const frame = requestAnimationFrame(() => {
       const restore =
-        location.state?.restoreScroll ??
-        (action === "POP" ? positions.get(location.key) : undefined);
+        (action === "POP" ? positions.get(location.key) : undefined) ??
+        location.state?.restoreScroll;
       if (typeof restore === "number" && !changedAnchor) {
         window.scrollTo(0, restore);
         return;

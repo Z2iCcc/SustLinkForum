@@ -1,0 +1,38 @@
+[
+  {
+    "file": "book.jpg",
+    "url": "https://img.alicdn.com/i4/449615170/O1CN013AgcVi1o3uTpmJqYO_%21%21449615170.jpg",
+    "source": "https://tao.hooos.com/goods_596095859881.html",
+    "purpose": "仅用于本地界面演示；标题、价格、作者均为虚构示例，非商品销售声明。"
+  },
+  {
+    "file": "lamp.jpg",
+    "url": "https://store.forlight.com/1418-home_default/tap-desk-lamp.jpg",
+    "source": "https://store.forlight.com/es/content/20-vuelta-al-cole",
+    "purpose": "仅用于本地界面演示；标题、价格、作者均为虚构示例，非商品销售声明。"
+  },
+  {
+    "file": "headphones.jpg",
+    "url": "https://images.unsplash.com/photo-1599855129764-f4cc28295202?auto=format&fit=crop&w=800&q=85",
+    "source": "https://unsplash.com/photos/a-pair-of-headphones-sitting-on-top-of-a-table-q7ZfVmvB49c",
+    "purpose": "仅用于本地界面演示；标题、价格、作者均为虚构示例，非商品销售声明。"
+  },
+  {
+    "file": "racket.jpg",
+    "url": "https://cdn.shopvnb.com/uploads/images/tin_tuc/vot-cau-long-yonex-arc-10-pg-1.webp",
+    "source": "https://shopvnb.com/vot-cau-long-yonex-arc-10-pg.html",
+    "purpose": "仅用于本地界面演示；标题、价格、作者均为虚构示例，非商品销售声明。"
+  },
+  {
+    "file": "box.jpg",
+    "url": "https://www.arkoko.com/data/arkoko/product/sanko/sanbox/252-52_1.jpg",
+    "source": "https://www.arkoko.com/product/7481",
+    "purpose": "仅用于本地界面演示；标题、价格、作者均为虚构示例，非商品销售声明。"
+  },
+  {
+    "file": "backpack.jpg",
+    "url": "https://images.unsplash.com/photo-1629952437774-170bc3e7d48b?auto=format&fit=crop&w=800&q=85",
+    "source": "https://unsplash.com/photos/black-backpack-on-white-floor-GASeJZDsFoE",
+    "purpose": "仅用于本地界面演示；标题、价格、作者均为虚构示例，非商品销售声明。"
+  }
+]
