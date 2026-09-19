@@ -34,21 +34,48 @@ for (const viewport of [
       "社团活动",
       "校园资讯",
     ]) {
-      await page.evaluate(() => scrollTo(0, 60));
-      const before = await page.evaluate(() => scrollY);
+      await page.evaluate(() =>
+        (innerWidth > 760
+          ? document.getElementById("forum-main")!
+          : window
+        ).scrollTo(0, 60),
+      );
+      const before = await page.evaluate(() =>
+        innerWidth > 760
+          ? document.getElementById("forum-main")!.scrollTop
+          : scrollY,
+      );
       await page.locator("#pub-board").click();
-      const opened = await page.evaluate(() => scrollY);
+      const opened = await page.evaluate(() =>
+        innerWidth > 760
+          ? document.getElementById("forum-main")!.scrollTop
+          : scrollY,
+      );
       await page.getByRole("option", { name, exact: true }).click();
       await page.waitForTimeout(250);
-      const after = await page.evaluate(() => scrollY);
+      const after = await page.evaluate(() =>
+        innerWidth > 760
+          ? document.getElementById("forum-main")!.scrollTop
+          : scrollY,
+      );
       expect(opened).toBe(before);
       expect(after).toBe(before);
     }
     const generic = page.getByRole("combobox", { name: "发布到", exact: true });
-    const before = await page.evaluate(() => scrollY);
+    const before = await page.evaluate(() =>
+      innerWidth > 760
+        ? document.getElementById("forum-main")!.scrollTop
+        : scrollY,
+    );
     await generic.selectOption("market");
     await expect(page.locator("#pub-board")).toBeVisible();
-    expect(await page.evaluate(() => scrollY)).toBe(before);
+    expect(
+      await page.evaluate(() =>
+        innerWidth > 760
+          ? document.getElementById("forum-main")!.scrollTop
+          : scrollY,
+      ),
+    ).toBe(before);
     await page.locator("#pub-board").focus();
     await page.keyboard.press("ArrowDown");
     await page.keyboard.press("End");
@@ -56,5 +83,11 @@ for (const viewport of [
     await page.keyboard.press("Enter");
     await expect(page.locator("#pub-board")).toContainText("失物招领");
     await expect(page.locator("#pub-board")).toBeFocused();
-    expect(await page.evaluate(() => scrollY)).toBe(before);
+    expect(
+      await page.evaluate(() =>
+        innerWidth > 760
+          ? document.getElementById("forum-main")!.scrollTop
+          : scrollY,
+      ),
+    ).toBe(before);
   });

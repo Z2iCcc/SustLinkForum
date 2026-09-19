@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link, useSearchParams, useLocation } from 'react-router-dom';
+import { Link, useSearchParams, useLocation, useNavigate } from 'react-router-dom';
 import { Heart, ShoppingBag, SlidersHorizontal, MessageCircle } from 'lucide-react';
 import { useForum } from '../context';
 import { ME } from '../seed';
@@ -10,6 +10,7 @@ import { TopicLink } from '../TopicLink';
 import { marketCategories } from '../publishing/model';
 import { addMarketExamples, marketPrice, priceLabel, setMarketPolicy } from './model';
 import campus from '../illustrations/campus.svg';
+import { readingScrollY } from '../scroll';
 
 export function MarketImage({topic}: {topic:Topic}) {
   const attachment=topic.attachments?.find(a=>a.kind==='image');
@@ -27,7 +28,7 @@ export function MarketHome() {
   const [params,setParams]=useSearchParams();
   const [open,setOpen]=useState(true);
   const mode=params.get('mode')==='wanted'?'wanted':'sale',category=params.get('category')||'',sort=params.get('price')||'',query=params.get('q')||'';
-  function filter(key:string,value:string){const next=new URLSearchParams(params);value?next.set(key,value):next.delete(key);setParams(next,{replace:true,state:{restoreScroll:window.scrollY}})}
+  function filter(key:string,value:string){const next=new URLSearchParams(params);value?next.set(key,value):next.delete(key);setParams(next,{replace:true,state:{restoreScroll:readingScrollY()}})}
   const topics=state.topics.filter(t=>t.boardId==='market'&&(!t.market?.status||t.market.status==='active')&&(t.publishing?.mode??'sale')===mode&&(!category||t.publishing?.category===category)&&(!query||`${t.title} ${t.body}`.includes(query)));
   if(sort)topics.sort((a,b)=>{const x=marketPrice(a),y=marketPrice(b);return x===undefined?y===undefined?0:1:y===undefined?-1:sort==='asc'?x-y:y-x});
   return <div className="market-page">
@@ -45,6 +46,6 @@ export function MarketDetailContent({topic}:{topic:Topic}) {
   return <><div className="market-detail-price">{priceLabel(topic)}{topic.market?.status&&topic.market.status!=='active'&&<small>{topic.market.status==='sold'?'已售出':'已下架'}</small>}</div>{topic.market?.demoImage&&<div className="market-detail-photo"><MarketImage topic={topic}/></div>}<Attachments items={topic.attachments}/><div className="post-body">{topic.body}</div><p className="market-handover">{[topic.publishing?.place,topic.publishing?.handover,topic.publishing?.negotiable?'可议价':''].filter(Boolean).join(' · ')}</p></>;
 }
 export function MarketActions({topic}:{topic:Topic}) {
-  const {state,update,requireLogin}=useForum();const location=useLocation();
-  return <div className="market-detail-actions"><MarketSave topic={topic}/>{topic.authorId!==ME?<Link className="primary" to={'/messages/chat/'+topic.id} state={{chatOrigin:location.pathname+location.search,restoreTopicY:window.scrollY}} onClick={e=>{if(!requireLogin())e.preventDefault()}}><MessageCircle size={16}/>聊一聊</Link>:state.loggedIn&&<fieldset className="market-policy"><legend>留言权限</legend>{[['everyone','所有人可留言'],['seller','仅卖家可留言']].map(([value,label])=><label key={value}><input type="radio" name="market-policy" checked={(topic.market?.commentPolicy??topic.publishing?.commentPolicy??'everyone')===value} onChange={()=>update(s=>setMarketPolicy(s,topic.id,value as 'everyone'|'seller'))}/>{label}</label>)}</fieldset>}</div>;
+  const {state,update,requireLogin}=useForum();const location=useLocation();const navigate=useNavigate();
+  return <div className="market-detail-actions"><MarketSave topic={topic}/>{topic.authorId!==ME?<Link className="primary" to={'/messages/chat/'+topic.id} onClick={e=>{if(!requireLogin()){e.preventDefault();return}if(e.button===0&&!e.ctrlKey&&!e.metaKey&&!e.shiftKey&&!e.altKey){e.preventDefault();navigate('/messages/chat/'+topic.id,{state:{chatOrigin:location.pathname+location.search,restoreTopicY:readingScrollY()}})}}}><MessageCircle size={16}/>聊一聊</Link>:state.loggedIn&&<fieldset className="market-policy"><legend>留言权限</legend>{[['everyone','所有人可留言'],['seller','仅卖家可留言']].map(([value,label])=><label key={value}><input type="radio" name="market-policy" checked={(topic.market?.commentPolicy??topic.publishing?.commentPolicy??'everyone')===value} onChange={()=>update(s=>setMarketPolicy(s,topic.id,value as 'everyone'|'seller'))}/>{label}</label>)}</fieldset>}</div>;
 }

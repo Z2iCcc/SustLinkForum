@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, type FormEvent } from "react";
+import { useState, useRef, type FormEvent } from "react";
 import {
   Link,
   NavLink,
@@ -35,20 +35,13 @@ export function Shell() {
   const board = boards.find((b) => location.pathname === `/board/${b.id}`);
   const detailTopic = state.topics.find(t=>location.pathname==='/topic/'+t.id);
   const isMarket = board?.id==='market' || detailTopic?.boardId==='market' || location.pathname.startsWith('/messages/chat/');
-  const shellRef=useRef<HTMLDivElement>(null);
-  useEffect(()=>{
-    if(!isMarket)return;
-    const sidebars=shellRef.current?.querySelectorAll<HTMLElement>('.left-sidebar,.right-sidebar');
-    const measure=()=>sidebars?.forEach(el=>el.style.setProperty('--sidebar-top',Math.min(104,window.innerHeight-el.offsetHeight-20)+'px'));
-    const observer=new ResizeObserver(measure);sidebars?.forEach(el=>observer.observe(el));window.addEventListener('resize',measure);measure();
-    return ()=>{observer.disconnect();window.removeEventListener('resize',measure)};
-  },[isMarket]);
+  const isChat = location.pathname.startsWith('/messages/chat/');
   function search(e: FormEvent) {
     e.preventDefault();
     navigate(`/search?q=${encodeURIComponent(query.trim())}`);
   }
   return (
-    <div className={`forum-app ${isMarket?"market-shell":""}`} ref={shellRef}>
+    <div className={`forum-app ${isMarket?"market-shell":""}`}>
       <a className="skip-link" href="#forum-main">
         跳到主要内容
       </a>
@@ -151,7 +144,7 @@ export function Shell() {
             交互原型 / 本浏览器保存
           </div>
         </aside>
-        <main id="forum-main" className="forum-main">
+        <main id="forum-main" className={`forum-main ${isChat ? 'chat-main' : ''}`} tabIndex={-1}>
           <Outlet />
         </main>
         <aside className="right-sidebar">

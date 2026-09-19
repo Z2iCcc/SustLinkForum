@@ -7,6 +7,7 @@ import {
 } from "react-router-dom";
 import { boards } from "./seed";
 import type { Topic } from "./types";
+import { mainScrollElement, readingScrollY, scrollReadingTo } from "./scroll";
 type Origin = { path: string; key: string; y: number; index: number };
 export function profileOriginFrom(location: Location): Origin | undefined {
   const origin = location.state?.profileOrigin as Origin | undefined;
@@ -58,7 +59,7 @@ export function composeOrigin(location: Location): Origin {
   return {
     path: location.pathname + location.search + location.hash,
     key: location.key,
-    y: window.scrollY,
+    y: readingScrollY(),
     index: window.history.state?.idx ?? 0,
   };
 }
@@ -118,11 +119,16 @@ export function RouteEffects() {
   useEffect(() => {
     const previous = history.scrollRestoration;
     history.scrollRestoration = "manual";
-    const remember = () => positions.set(currentKey.current, scrollY);
-    window.addEventListener("scroll", remember, { passive: true });
+    const remember = (event: Event) => {
+      const main = mainScrollElement();
+      if (event.target === (main ?? document)) {
+        positions.set(currentKey.current, readingScrollY());
+      }
+    };
+    document.addEventListener("scroll", remember, { passive: true, capture: true });
     return () => {
       history.scrollRestoration = previous;
-      window.removeEventListener("scroll", remember);
+      document.removeEventListener("scroll", remember, true);
     };
   }, []);
   useLayoutEffect(() => {
@@ -140,7 +146,7 @@ export function RouteEffects() {
         (action === "POP" ? positions.get(location.key) : undefined) ??
         location.state?.restoreScroll;
       if (typeof restore === "number" && !changedAnchor) {
-        window.scrollTo(0, restore);
+        scrollReadingTo(restore);
         return;
       }
       if (location.hash) {
@@ -149,7 +155,7 @@ export function RouteEffects() {
           id = decodeURIComponent(id);
         } catch {}
         document.getElementById(id)?.scrollIntoView({ block: "center" });
-      } else window.scrollTo(0, 0);
+      } else scrollReadingTo(0);
     });
     return () => cancelAnimationFrame(frame);
   }, [location.key, location.pathname, location.hash, location.state, action]);

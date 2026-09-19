@@ -1,0 +1,85 @@
+/* One type scale for post lists, including boards, search and profiles. */
+.forum-app .topic-title-line .topic-title {
+  font-size: 15px;
+}
+
+/* Match the reply and private-message editors without a moving outer outline. */
+.forum-app .market-chat .chat-composer textarea:is(:focus, :focus-visible),
+.forum-app .topic-detail .reply-editor textarea:is(:focus, :focus-visible) {
+  outline: none;
+  border-color: #a9beca;
+  background-color: #fdfefe;
+  box-shadow: 0 0 0 2px rgb(113 158 185 / 10%);
+}
+
+.chat-history:focus-visible {
+  outline: 1px solid #a9beca;
+  outline-offset: -1px;
+}
+
+@media (min-width: 761px) {
+  .forum-app {
+    height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  .forum-app > .forum-header {
+    flex-shrink: 0;
+  }
+  .forum-app > .forum-layout {
+    flex: 1;
+    min-height: 0;
+    grid-template-rows: minmax(0, 1fr);
+    align-items: stretch;
+    padding-top: 30px;
+    padding-bottom: 0;
+  }
+  .forum-app .forum-layout > :is(.forum-main, .left-sidebar, .right-sidebar) {
+    position: static;
+    align-self: stretch;
+    min-height: 0;
+    max-height: none;
+    overflow-y: auto;
+    overscroll-behavior-y: contain;
+    scrollbar-width: thin;
+    scrollbar-color: #cbd6dc transparent;
+    padding-bottom: 24px;
+  }
+  .forum-app .right-sidebar > * {
+    flex-shrink: 0;
+  }
+  .forum-app .forum-main.chat-main {
+    display: flex;
+    flex-direction: column;
+  }
+  .chat-main > .breadcrumb {
+    flex-shrink: 0;
+  }
+  .chat-main .market-chat {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 480px;
+  }
+  .chat-main .market-chat > :not(.chat-history) {
+    flex-shrink: 0;
+  }
+  .chat-main .chat-history {
+    flex: 1;
+    height: auto;
+    min-height: 100px;
+  }
+  .chat-main .chat-composer textarea {
+    height: 80px;
+    resize: none;
+  }
+}
+
+@media (forced-colors: active) {
+  .forum-app .market-chat .chat-composer textarea:focus-visible,
+  .forum-app .topic-detail .reply-editor textarea:focus-visible {
+    outline: 1px solid Highlight;
+    box-shadow: none;
+  }
+}

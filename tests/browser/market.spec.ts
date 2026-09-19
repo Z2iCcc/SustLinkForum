@@ -20,7 +20,7 @@ test('market list opens full detail, restores browsing and updates saves without
  expect(await image!.evaluate(e=>e.isConnected)).toBe(true);
  expect(await image!.boundingBox()).toEqual(box);
  await expect(card).toContainText('13 已收藏');
- const y=await page.evaluate(()=>scrollY);
+ const y=await page.locator('#forum-main').evaluate(e=>e.scrollTop);
  await card.locator('.market-product-link').click();
  await expect(page).toHaveURL(/topic\/market-demo-0/);
  await expect(page.locator('.market-detail')).toBeVisible();
@@ -28,7 +28,7 @@ test('market list opens full detail, restores browsing and updates saves without
  await expect(page.getByRole('button',{name:'取消收藏',exact:true})).toHaveAttribute('aria-pressed','true');
  await page.locator('.compose-back').click();
  await expect(page).toHaveURL(/price=asc/);
- await expect.poll(()=>page.evaluate(()=>scrollY)).toBeCloseTo(y,0);
+ await expect.poll(()=>page.locator('#forum-main').evaluate(e=>e.scrollTop)).toBeCloseTo(y,0);
 });
 test('seller comment permissions and public replies share forum storage',async({page})=>{
  await setup(page);await page.goto('/topic/market-demo-1');
@@ -67,13 +67,13 @@ test('chat product summary returns to details and restores unsent draft and chat
  await expect(page.locator('.chat-message')).toHaveCount(6);
  await page.goto('/messages');await expect(page.locator('.market-conversations')).toContainText('[草稿] 明天下午可以吗');
 });
-test('desktop sticky sides and mobile single column remain usable',async({page})=>{
+test('desktop independent columns and mobile single column remain usable',async({page})=>{
  const errors:string[]=[];page.on('pageerror',e=>errors.push(e.message));
  await setup(page);await mkdir('artifacts/market-integration',{recursive:true});
  await page.screenshot({path:'artifacts/market-integration/home-desktop.png',fullPage:true});
- await page.evaluate(()=>scrollTo(0,700));
+ await page.locator('#forum-main').evaluate(e=>e.scrollTop=700);
  const left=await page.locator('.left-sidebar').boundingBox();
- await page.evaluate(()=>scrollTo(0,900));
+ await page.locator('#forum-main').evaluate(e=>e.scrollTop=900);
  expect((await page.locator('.left-sidebar').boundingBox())!.y).toBeCloseTo(left!.y,0);
  for(const width of [1468,1024,655,390]){
   await page.setViewportSize({width,height:898});

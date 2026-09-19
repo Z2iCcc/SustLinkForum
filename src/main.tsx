@@ -21,6 +21,7 @@ import "./styles.css";
 import { RouteEffects } from "./navigation";
 import "./refinements.css";
 import "./market/market.css";
+import "./scroll-layout.css";
 function App() {
   return (
     <BrowserRouter>

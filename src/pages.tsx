@@ -1,6 +1,7 @@
 import { MarketHome, MarketDetailContent, MarketActions } from "./market/Market";
 import { canComment } from "./market/model";
 import { ConversationList } from "./messaging/Messaging";
+import { readingScrollY, scrollReadingTo } from "./scroll";
 import { useEffect, useState, useRef, type FormEvent } from "react";
 import {
   Link,
@@ -105,7 +106,7 @@ export function ForumHome() {
     if (nextCategory) next.set("category", nextCategory);
     else next.delete("category");
     next.delete("page");
-    setParams(next, { state: { restoreScroll: window.scrollY } });
+    setParams(next, { state: { restoreScroll: readingScrollY() } });
   }
   const page = Math.min(
     Math.max(1, Number(params.get("page")) || 1),
@@ -201,7 +202,7 @@ export function ForumHome() {
           total={topics.length}
           onChange={(p) => {
             setFilter("page", String(p));
-            window.scrollTo(0, 0);
+            scrollReadingTo(0);
           }}
         />
       </section>
@@ -222,7 +223,7 @@ export function SearchPage() {
     if (nextCategory) next.set("category", nextCategory);
     else next.delete("category");
     next.delete("page");
-    setParams(next, { state: { restoreScroll: window.scrollY } });
+    setParams(next, { state: { restoreScroll: readingScrollY() } });
   }
   const [input, setInput] = useState(query);
   useEffect(() => setInput(query), [query]);
@@ -538,7 +539,7 @@ export function TopicPage() {
                 if (value === "oldest") next.delete("replySort");
                 else next.set("replySort", value);
                 setParams(next, {
-                  state: { ...location.state, restoreScroll: window.scrollY },
+                  state: { ...location.state, restoreScroll: readingScrollY() },
                 });
               }}
             />
@@ -810,7 +811,7 @@ export function NewTopic() {
       state: {
         ...location.state,
         composeInitialized: true,
-        restoreScroll: window.scrollY,
+        restoreScroll: readingScrollY(),
       },
     });
   }, []);
