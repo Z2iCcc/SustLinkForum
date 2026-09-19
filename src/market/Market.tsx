@@ -5,12 +5,13 @@ import { useForum } from '../context';
 import { ME } from '../seed';
 import type { Topic } from '../types';
 import { useAssetUrl, Attachments } from '../Media';
-import { Avatar } from '../components';
+import { Avatar, PostBody } from '../components';
 import { TopicLink } from '../TopicLink';
 import { marketCategories } from '../publishing/model';
 import { addMarketExamples, marketPrice, priceLabel, setMarketPolicy } from './model';
 import campus from '../illustrations/campus.svg';
 import { readingScrollY } from '../scroll';
+import { listOriginFrom } from '../navigation';
 
 export function MarketImage({topic}: {topic:Topic}) {
   const attachment=topic.attachments?.find(a=>a.kind==='image');
@@ -43,9 +44,9 @@ export function MarketHome() {
   </div>;
 }
 export function MarketDetailContent({topic}:{topic:Topic}) {
-  return <><div className="market-detail-price">{priceLabel(topic)}{topic.market?.status&&topic.market.status!=='active'&&<small>{topic.market.status==='sold'?'已售出':'已下架'}</small>}</div>{topic.market?.demoImage&&<div className="market-detail-photo"><MarketImage topic={topic}/></div>}<Attachments items={topic.attachments}/><div className="post-body">{topic.body}</div><p className="market-handover">{[topic.publishing?.place,topic.publishing?.handover,topic.publishing?.negotiable?'可议价':''].filter(Boolean).join(' · ')}</p></>;
+  return <><div className="market-detail-price">{priceLabel(topic)}{topic.market?.status&&topic.market.status!=='active'&&<small>{topic.market.status==='sold'?'已售出':'已下架'}</small>}</div>{topic.market?.demoImage&&<div className="market-detail-photo"><MarketImage topic={topic}/></div>}<Attachments items={topic.attachments}/><PostBody body={topic.body}/><p className="market-handover">{[topic.publishing?.place,topic.publishing?.handover,topic.publishing?.negotiable?'可议价':''].filter(Boolean).join(' · ')}</p></>;
 }
 export function MarketActions({topic}:{topic:Topic}) {
   const {state,update,requireLogin}=useForum();const location=useLocation();const navigate=useNavigate();
-  return <div className="market-detail-actions"><MarketSave topic={topic}/>{topic.authorId!==ME?<Link className="primary" to={'/messages/chat/'+topic.id} onClick={e=>{if(!requireLogin()){e.preventDefault();return}if(e.button===0&&!e.ctrlKey&&!e.metaKey&&!e.shiftKey&&!e.altKey){e.preventDefault();navigate('/messages/chat/'+topic.id,{state:{chatOrigin:location.pathname+location.search,restoreTopicY:readingScrollY()}})}}}><MessageCircle size={16}/>聊一聊</Link>:state.loggedIn&&<fieldset className="market-policy"><legend>留言权限</legend>{[['everyone','所有人可留言'],['seller','仅卖家可留言']].map(([value,label])=><label key={value}><input type="radio" name="market-policy" checked={(topic.market?.commentPolicy??topic.publishing?.commentPolicy??'everyone')===value} onChange={()=>update(s=>setMarketPolicy(s,topic.id,value as 'everyone'|'seller'))}/>{label}</label>)}</fieldset>}</div>;
+  return <div className="market-detail-actions"><MarketSave topic={topic}/>{topic.authorId!==ME?<Link className="primary" to={'/messages/chat/'+topic.id} onClick={e=>{if(!requireLogin()){e.preventDefault();return}if(e.button===0&&!e.ctrlKey&&!e.metaKey&&!e.shiftKey&&!e.altKey){e.preventDefault();navigate('/messages/chat/'+topic.id,{state:{listOrigin:listOriginFrom(location),restoreTopicY:readingScrollY()}})}}}><MessageCircle size={16}/>聊一聊</Link>:state.loggedIn&&<fieldset className="market-policy"><legend>留言权限</legend>{[['everyone','所有人可留言'],['seller','仅卖家可留言']].map(([value,label])=><label key={value}><input type="radio" name="market-policy" checked={(topic.market?.commentPolicy??topic.publishing?.commentPolicy??'everyone')===value} onChange={()=>update(s=>setMarketPolicy(s,topic.id,value as 'everyone'|'seller'))}/>{label}</label>)}</fieldset>}</div>;
 }

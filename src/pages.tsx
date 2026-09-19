@@ -52,6 +52,7 @@ import {
   PageNav,
   relativeTime,
   TopicList,
+  PostBody,
 } from "./components";
 import type {
   Attachment,
@@ -385,7 +386,6 @@ export function TopicPage() {
     author = identity(state, topic, topic.authorId);
   const isMarket = topic.boardId === "market";
   const replyAllowed = canComment(topic, ME);
-  const chatReturn = location.state?.chatReturn;
   const replies = state.replies.filter((r) => r.topicId === topic.id);
   const visible = selectReplies(state, topic, replySort, onlyAuthor);
   function quote(target: string) {
@@ -440,15 +440,15 @@ export function TopicPage() {
   }
   return (
     <>
-      {chatReturn && typeof chatReturn.path === 'string' && /^\/messages\/chat\/[^/]+$/.test(chatReturn.path) ? <Link className="breadcrumb compose-back" to={chatReturn.path} state={{restoreScroll:chatReturn.y??0}}><ArrowLeft size={14}/>返回聊天</Link> : hasOrigin ? (
+      {hasOrigin ? (
         <button className="breadcrumb compose-back" onClick={exitTopic}>
           <ArrowLeft size={14} />
-          {sourceName}
+          {isMarket ? "返回" : sourceName}
         </button>
       ) : (
         <Link className="breadcrumb" to={`/board/${board.id}`}>
           <ArrowLeft size={14} />
-          {board.name}
+          {isMarket ? "返回" : board.name}
         </Link>
       )}
       <article className={`content-panel topic-detail ${isMarket ? "market-detail" : ""}`}>
@@ -489,7 +489,7 @@ export function TopicPage() {
             </div>
             <span className="floor-number">#1</span>
           </div>
-          {isMarket ? <MarketDetailContent topic={topic}/> : <><div className="post-body">{topic.body}</div><Attachments items={topic.attachments} /></>}
+          {isMarket ? <MarketDetailContent topic={topic}/> : <><PostBody body={topic.body}/><Attachments items={topic.attachments} /></>}
           {isMarket && <MarketActions topic={topic}/>}
           <div className="post-actions">
             {!isMarket && <><button
@@ -575,7 +575,7 @@ export function TopicPage() {
                 <span className="floor-number">#{floor}</span>
               </div>
               {r.quoteId && <QuoteBlock topic={topic} quoteId={r.quoteId} />}
-              <div className="post-body">{r.body}</div>
+              <PostBody body={r.body}/>
               <Attachments items={r.attachments} />
               <div className="reply-actions post-actions">
                 <button

@@ -61,7 +61,7 @@ test('chat product summary returns to details and restores unsent draft and chat
  await page.locator('.chat-history').evaluate(e=>{e.scrollTop=80;e.dispatchEvent(new Event('scroll'))});
  await page.locator('.chat-product').click();
  await expect(page).toHaveURL(/topic\/market-demo-0/);
- await page.getByRole('link',{name:'返回聊天',exact:true}).click();
+ await page.getByRole('link',{name:'聊一聊',exact:true}).click();
  await expect(page.getByLabel('消息',{exact:true})).toHaveValue('明天下午可以吗');
  await expect.poll(()=>page.locator('.chat-history').evaluate(e=>e.scrollTop)).toBe(80);
  await page.reload();
@@ -71,7 +71,33 @@ test('chat product summary returns to details and restores unsent draft and chat
  await page.getByRole('link',{name:'返回',exact:true}).click();
  await expect(page).toHaveURL(/topic\/market-demo-0/);
  await expect(page.locator('.market-detail')).toBeVisible();
+ await page.locator('#forum-main > .breadcrumb').click();
+ await expect(page).toHaveURL(/\/board\/market$/);
  await page.goto('/messages');await expect(page.locator('.market-conversations')).toContainText('[草稿] 明天下午可以吗');
+});
+
+test('chat returns through detail to the original market filters and reading position',async({page})=>{
+ await setup(page);
+ await page.getByRole('button',{name:'分类',exact:true}).click();
+ await page.getByRole('button',{name:'价格未排序，点击升序'}).click();
+ const card=page.locator('[data-product="market-demo-0"] .market-product-link');
+ await card.scrollIntoViewIfNeeded();
+ const y=await page.locator('#forum-main').evaluate(e=>e.scrollTop);
+ await card.click();
+ await expect(page.locator('.detail-heading h1')).toHaveCSS('font-size','20px');
+ await expect(page.locator('.original-post .post-body')).toHaveCSS('line-height','24px');
+ await expect(page.locator('.original-post .post-body > p').first()).toHaveCSS('line-height','24px');
+ await expect(page.locator('.original-post .post-body > p').nth(1)).toHaveCSS('margin-top','8px');
+ await page.getByRole('link',{name:'聊一聊',exact:true}).click();
+ await page.reload();
+ await page.getByRole('link',{name:'返回',exact:true}).click();
+ await expect(page).toHaveURL(/\/topic\/market-demo-0$/);
+ await page.getByRole('button',{name:'返回',exact:true}).click();
+ await expect(page).toHaveURL(/\/board\/market\?price=asc$/);
+ await expect.poll(()=>page.locator('#forum-main').evaluate(e=>e.scrollTop)).toBeCloseTo(y,0);
+ await page.goto('/board/life');
+ await page.locator('.topic-title').first().click();
+ await expect(page.locator('.original-post .post-body')).toHaveCSS('line-height','24px');
 });
 test('desktop independent columns and mobile single column remain usable',async({page})=>{
  const errors:string[]=[];page.on('pageerror',e=>errors.push(e.message));

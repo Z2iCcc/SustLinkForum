@@ -6,7 +6,7 @@ import { ME } from '../seed';
 import { MarketImage } from '../market/Market';
 import { priceLabel } from '../market/model';
 import { startConversation, sendChat } from './model';
-import { readingScrollY } from '../scroll';
+import { listOriginFrom } from '../navigation';
 
 export function ConversationList(){
  const {state}=useForum();
@@ -32,7 +32,7 @@ export function ChatPage(){
   if (!topic || event.button !== 0 || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
   event.preventDefault();
   navigate('/topic/'+id, {state: {
-   chatReturn: {path: location.pathname, y: readingScrollY()},
+   listOrigin: listOriginFrom(location),
    restoreScroll: location.state?.restoreTopicY ?? 0,
   }});
  }

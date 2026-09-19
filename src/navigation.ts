@@ -21,7 +21,11 @@ export function useTopicExit(boardId?: string) {
   const location = useLocation(),
     navigate = useNavigate();
   const profileOrigin = profileOriginFrom(location);
-  const origin = profileOrigin ?? listOriginFrom(location);
+  const listOrigin = listOriginFrom(location);
+  // Market's visible return path is always detail -> market, never back to chat.
+  const origin = boardId === "market"
+    ? (listOrigin?.path.match(/^\/board\/market([?#]|$)/) ? listOrigin : undefined)
+    : profileOrigin ?? listOrigin;
   function exit() {
     if (!origin) {
       navigate(`/board/${boardId}`, { replace: true });

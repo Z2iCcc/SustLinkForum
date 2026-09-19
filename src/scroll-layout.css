@@ -1,4 +1,24 @@
 /* One type scale for post lists, including boards, search and profiles. */
+/* Product detail title: 20px font, 28px line height. */
+.forum-app .market-detail .detail-heading h1 {
+  font-size: 20px;
+  line-height: 1.4;
+}
+
+/* All board detail bodies: 16px font x 1.5 = 24px line height; paragraph gap 8px. */
+.forum-app .topic-detail .post-body {
+  line-height: 1.5;
+  white-space: normal;
+}
+.forum-app .topic-detail .post-body > p {
+  margin: 0;
+  line-height: inherit;
+  white-space: pre-wrap;
+}
+.forum-app .topic-detail .post-body > p + p {
+  margin-top: 8px;
+}
+
 .forum-app .topic-title-line .topic-title {
   font-size: 15px;
 }
