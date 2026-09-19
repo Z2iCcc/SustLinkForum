@@ -26,7 +26,7 @@ export function MarketSave({topic,compact=false}: {topic:Topic;compact?:boolean}
 export function MarketHome() {
   const {state,update}=useForum();
   const [params,setParams]=useSearchParams();
-  const [open,setOpen]=useState(true);
+  const [open,setOpen]=useState(false);
   const mode=params.get('mode')==='wanted'?'wanted':'sale',category=params.get('category')||'',sort=params.get('price')||'',query=params.get('q')||'';
   function filter(key:string,value:string){const next=new URLSearchParams(params);value?next.set(key,value):next.delete(key);setParams(next,{replace:true,state:{restoreScroll:readingScrollY()}})}
   const topics=state.topics.filter(t=>t.boardId==='market'&&(!t.market?.status||t.market.status==='active')&&(t.publishing?.mode??'sale')===mode&&(!category||t.publishing?.category===category)&&(!query||`${t.title} ${t.body}`.includes(query)));

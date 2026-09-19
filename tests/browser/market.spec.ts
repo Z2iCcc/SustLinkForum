@@ -10,6 +10,8 @@ async function setup(page:Page){
 }
 test('market list opens full detail, restores browsing and updates saves without image replacement',async({page})=>{
  await setup(page);
+ await expect(page.getByRole('button',{name:'分类',exact:true})).toHaveAttribute('aria-expanded','false');
+ await page.getByRole('button',{name:'分类',exact:true}).click();
  await page.getByRole('button',{name:'价格未排序，点击升序'}).click();
  await expect(page).toHaveURL(/price=asc/);
  const card=page.locator('[data-product="market-demo-0"]');
@@ -65,6 +67,10 @@ test('chat product summary returns to details and restores unsent draft and chat
  await page.reload();
  await expect(page.getByLabel('消息',{exact:true})).toHaveValue('明天下午可以吗');
  await expect(page.locator('.chat-message')).toHaveCount(6);
+ await expect(page.locator('.chat-message-meta').first()).not.toContainText('·');
+ await page.getByRole('link',{name:'返回',exact:true}).click();
+ await expect(page).toHaveURL(/topic\/market-demo-0/);
+ await expect(page.locator('.market-detail')).toBeVisible();
  await page.goto('/messages');await expect(page.locator('.market-conversations')).toContainText('[草稿] 明天下午可以吗');
 });
 test('desktop independent columns and mobile single column remain usable',async({page})=>{

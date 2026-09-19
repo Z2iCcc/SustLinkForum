@@ -335,7 +335,7 @@ function QuoteBlock({ topic, quoteId }: { topic: Topic; quoteId: string }) {
         className="content-hit-link"
         to={`/topic/${topic.id}#${quoteId === topic.id ? "floor-1" : quoteId}`}
       >
-        {author.name} · #{floor}
+        {author.name} #{floor}
         <ArrowUpRight size={12} />
       </TopicLink>
       <p>
@@ -1307,7 +1307,7 @@ export function Profile() {
                     </p>
                     <small className="reply-history-meta">
                       <AuthorName name={who.name} />
-                      <span>· #{floor}</span>
+                      <span>#{floor}</span>
                     </small>
                   </article>
                 );

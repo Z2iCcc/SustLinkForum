@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, type MouseEvent } from 'react';
 import { Link, useLocation, useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Send, MessageCircle } from 'lucide-react';
 import { useForum } from '../context';
@@ -28,9 +28,17 @@ export function ChatPage(){
  if(!state.loggedIn)return <section className="content-panel chat-login"><h1>聊一聊</h1><p>登录演示账号后查看本机聊天记录。</p><button className="primary" onClick={login}>演示登录</button></section>;
  if(topic?.authorId===ME)return <section className="content-panel chat-login"><p>这是你发布的商品，无需与自己聊天。</p><Link to={'/topic/'+id}>返回商品</Link></section>;
  if(!chat)return <section className="content-panel chat-login"><p>{topic?'正在打开会话…':'商品已不可查看，无法创建会话。'}</p><Link to="/messages">返回消息</Link></section>;
+ function openProduct(event: MouseEvent<HTMLAnchorElement>) {
+  if (!topic || event.button !== 0 || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+  event.preventDefault();
+  navigate('/topic/'+id, {state: {
+   chatReturn: {path: location.pathname, y: readingScrollY()},
+   restoreScroll: location.state?.restoreTopicY ?? 0,
+  }});
+ }
  const seller=state.users.find(u=>u.id===chat.sellerId);
- return <><Link className="breadcrumb" to="/messages"><ArrowLeft size={14}/>消息</Link><section className="content-panel market-chat"><header className="chat-heading"><h1>{seller?.name??'卖家'}</h1><p>私聊演示 · 消息仅保存在本浏览器，不会发送给对方</p></header>
- {topic?<Link className="chat-product" to={'/topic/'+id} onClick={e=>{if(e.button===0&&!e.ctrlKey&&!e.metaKey&&!e.shiftKey&&!e.altKey){e.preventDefault();navigate('/topic/'+id,{state:{chatReturn:{path:location.pathname,y:readingScrollY()},restoreScroll:location.state?.restoreTopicY??0}})}}}><div><MarketImage topic={topic}/></div><span><strong>{topic.title}</strong><small>{priceLabel(topic)} · {topic.market?.status==='sold'?'已售出':topic.market?.status==='withdrawn'?'已下架':'查看商品详情'} ↗</small></span></Link>:<div className="chat-product unavailable"><span><strong>{chat.title}</strong><small>商品已不可查看，已有聊天记录仍保留。</small></span></div>}
- <div className="chat-history" ref={history} role="log" tabIndex={0} aria-label="聊天记录" onScroll={e=>{try{sessionStorage.setItem('market-chat-position:'+id,String(e.currentTarget.scrollTop))}catch{}}}>{!chat.messages.length&&<p className="chat-empty">先和卖家打个招呼吧。</p>}{chat.messages.map(m=><div className={`chat-message ${m.authorId===ME?'mine':''}`} key={m.id}><span>{m.authorId===ME?'我':seller?.name??'卖家'} · {new Date(m.createdAt).toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'})}</span><p>{m.body}</p><small>本机已保存</small></div>)}</div>
+ return <><Link className="breadcrumb" to={topic ? '/topic/'+id : '/messages'} onClick={openProduct}><ArrowLeft size={14}/>返回</Link><section className="content-panel market-chat"><header className="chat-heading"><h1>{seller?.name??'卖家'}</h1><p>私聊演示 · 消息仅保存在本浏览器，不会发送给对方</p></header>
+ {topic?<Link className="chat-product" to={'/topic/'+id} onClick={openProduct}><div><MarketImage topic={topic}/></div><span><strong>{topic.title}</strong><small>{priceLabel(topic)} · {topic.market?.status==='sold'?'已售出':topic.market?.status==='withdrawn'?'已下架':'查看商品详情'} ↗</small></span></Link>:<div className="chat-product unavailable"><span><strong>{chat.title}</strong><small>商品已不可查看，已有聊天记录仍保留。</small></span></div>}
+ <div className="chat-history" ref={history} role="log" tabIndex={0} aria-label="聊天记录" onScroll={e=>{try{sessionStorage.setItem('market-chat-position:'+id,String(e.currentTarget.scrollTop))}catch{}}}>{!chat.messages.length&&<p className="chat-empty">先和卖家打个招呼吧。</p>}{chat.messages.map(m=><div className={`chat-message ${m.authorId===ME?'mine':''}`} key={m.id}><span className="chat-message-meta"><span>{m.authorId===ME?'我':seller?.name??'卖家'}</span>{' '}<time dateTime={new Date(m.createdAt).toISOString()}>{new Date(m.createdAt).toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'})}</time></span><p>{m.body}</p><small>本机已保存</small></div>)}</div>
  <form className="chat-composer" onSubmit={e=>{e.preventDefault();send()}}><label htmlFor="chat-input">消息</label><textarea id="chat-input" placeholder="输入消息…" maxLength={3000} disabled={!topic} value={chat.draft} onChange={e=>{setError('');const draft=e.target.value;update(s=>({...s,conversations:s.conversations?.map(c=>c.topicId===id?{...c,draft}:c)}))}}/>{(error||storageWarning)&&<p className="form-error" role="alert">{error||storageWarning}</p>}<div><button type="button" className="text-button" disabled={!topic} onClick={()=>send(true)}>模拟卖家回复</button><button className="primary" disabled={!topic||!chat.draft.trim()}><Send size={15}/>发送</button></div></form></section></>;
 }
