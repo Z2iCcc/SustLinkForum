@@ -23,6 +23,27 @@
   font-size: 15px;
 }
 
+/* Replies across all boards: 16px vertical inset, 10px content/action gaps.
+   Keep height automatic for long text, quotes and attachments; body remains 16px/24px. */
+.forum-app .topic-detail .reply-floor {
+  padding-block: 16px;
+}
+.forum-app .reply-floor .floor-header small {
+  margin-top: 2px;
+}
+.forum-app .reply-floor .post-body,
+.forum-app .reply-floor .quoted {
+  margin-top: 10px;
+}
+.forum-app .reply-floor .reply-actions {
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+.forum-app .reply-floor .reply-actions button {
+  min-height: 34px;
+  padding: 6px 10px;
+}
+
 /* Match the reply and private-message editors without a moving outer outline. */
 .forum-app .market-chat .chat-composer textarea:is(:focus, :focus-visible),
 .forum-app .topic-detail .reply-editor textarea:is(:focus, :focus-visible) {
