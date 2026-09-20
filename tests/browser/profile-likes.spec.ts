@@ -1,0 +1,51 @@
+import { test, expect } from '@playwright/test';
+import { createSeed } from '../../src/seed';
+import { addMarketExamples } from '../../src/market/model';
+import { mkdir } from 'node:fs/promises';
+
+test('profile likes follow topic hearts independently of market bookmarks', async ({ page }) => {
+  const state = { ...addMarketExamples(createSeed()), loggedIn: true, likes: ['market-demo-0'], saves: [] };
+  const title = state.topics.find(t => t.id === 'topic-2')!.title;
+  await page.goto('/forum');
+  await page.evaluate(s => localStorage.setItem('sustlink.forum.v1', JSON.stringify(s)), state);
+  await page.goto('/topic/topic-2');
+  await page.locator('.original-post .reaction-like').click();
+  await page.goto('/profile?tab=likes');
+  await expect(page.locator('.list-tabs button')).toHaveText(['笔记', '回复', '喜欢', '收藏']);
+  await expect(page.locator('.topic-row')).toHaveCount(1);
+  await expect(page.locator('.topic-row')).toContainText(title);
+  await page.reload();
+  await page.locator('.topic-row').getByRole('link', { name: title, exact: true }).click();
+  await expect(page.locator('.original-post .reaction-like')).toHaveAttribute('aria-pressed', 'true');
+  await page.locator('.original-post .reaction-like').click();
+  await page.locator('#forum-main > .breadcrumb').click();
+  await expect(page).toHaveURL(/profile\?tab=likes/);
+  await expect(page.getByText('还没有喜欢的笔记', { exact: true })).toBeVisible();
+  await page.goto('/topic/market-demo-0');
+  await expect(page.locator('.original-post .reaction-like')).toHaveCount(0);
+  await page.locator('.original-post .reaction-save').click();
+  await page.goto('/profile?tab=saves');
+  await expect(page.locator('.topic-row')).toHaveCount(1);
+  await expect(page.locator('.topic-row')).toContainText('认真做过笔记的高数教材');
+  await page.getByRole('button', { name: '喜欢', exact: true }).click();
+  await expect(page.locator('.topic-row')).toHaveCount(0);
+  await expect(page.getByText('还没有喜欢的笔记', { exact: true })).toBeVisible();
+  await mkdir('artifacts/profile-likes', { recursive: true });
+  for (const width of [1196, 421]) {
+    await page.setViewportSize({ width, height: 897 });
+    await page.goto('/profile?tab=likes');
+    await page.screenshot({ path: `artifacts/profile-likes/profile-${width}.png` });
+    await page.goto('/board/market');
+    const card = page.locator('[data-product="market-demo-0"]');
+    await card.scrollIntoViewIfNeeded();
+    await expect(card.getByRole('button')).toHaveCount(0);
+    await expect(card.locator('.market-price-row')).not.toContainText('已收藏');
+    await expect(card.locator('.market-save-count')).toHaveText('13 已收藏');
+    const author = await card.locator('.market-author-name').boundingBox();
+    const count = await card.locator('.market-save-count').boundingBox();
+    expect(author!.y + author!.height / 2).toBeCloseTo(count!.y + count!.height / 2, 0);
+    expect(author!.x + author!.width).toBeLessThanOrEqual(count!.x);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+    await page.screenshot({ path: `artifacts/profile-likes/market-${width}.png` });
+  }
+});

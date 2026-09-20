@@ -105,9 +105,11 @@ export function composeSourceName(path: string, topics: Topic[] = []) {
   if (url.pathname === "/profile")
     return url.searchParams.get("tab") === "saves"
       ? "收藏"
-      : url.searchParams.get("tab") === "replies"
-        ? "回复"
-        : "个人中心";
+      : url.searchParams.get("tab") === "likes"
+        ? "喜欢"
+        : url.searchParams.get("tab") === "replies"
+          ? "回复"
+          : "个人中心";
   if (url.pathname.startsWith("/topic/"))
     return (
       topics.find((topic) => url.pathname === `/topic/${topic.id}`)?.title ??

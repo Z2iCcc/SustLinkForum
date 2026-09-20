@@ -24,7 +24,7 @@ export function TopicReactions({ topic }: { topic: Topic }) {
     update(s => ({ ...s, [key]: s[key].includes(topic.id) ? s[key].filter(id => id !== topic.id) : [...s[key], topic.id] }));
   }
   return <>
-    <DetailAction icon={Heart} label={`点赞 ${topic.baseLikes + Number(liked)}`} className={`reaction-like ${liked ? 'is-active' : ''}`} aria-pressed={liked} onClick={() => toggle('likes')} />
+    {topic.boardId !== 'market' && <DetailAction icon={Heart} label={`点赞 ${topic.baseLikes + Number(liked)}`} className={`reaction-like ${liked ? 'is-active' : ''}`} aria-pressed={liked} onClick={() => toggle('likes')} />}
     <DetailAction icon={Bookmark} label={saved ? '已收藏' : '收藏'} title={saved ? '取消收藏' : '收藏'} className={`reaction-save ${saved ? 'is-active' : ''}`} aria-pressed={saved} onClick={() => toggle('saves')} />
   </>;
 }

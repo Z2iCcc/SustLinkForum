@@ -1115,10 +1115,13 @@ export function Profile() {
   if (!state.loggedIn) return <LoginRequired />;
   const mine = state.topics.filter((t) => t.authorId === ME);
   const saved = state.topics.filter((t) => state.saves.includes(t.id));
+  const liked = state.topics.filter(
+    (t) => t.boardId !== "market" && state.likes.includes(t.id),
+  );
   const myReplies = state.replies
     .filter((r) => r.authorId === ME)
     .sort((a, b) => b.createdAt - a.createdAt);
-  const selected = tab === "saves" ? saved : mine;
+  const selected = tab === "saves" ? saved : tab === "likes" ? liked : mine;
   const total = tab === "replies" ? myReplies.length : selected.length;
   const page = Math.min(
     Math.max(1, Math.floor(Number(params.get("page")) || 1)),
@@ -1219,6 +1222,9 @@ export function Profile() {
           <strong>{myReplies.length}</strong>回复
         </span>
         <span>
+          <strong>{liked.length}</strong>喜欢
+        </span>
+        <span>
           <strong>{saved.length}</strong>收藏
         </span>
       </div>
@@ -1227,6 +1233,7 @@ export function Profile() {
           {[
             ["topics", "笔记"],
             ["replies", "回复"],
+            ["likes", "喜欢"],
             ["saves", "收藏"],
           ].map(([id, label]) => (
             <button
@@ -1285,9 +1292,11 @@ export function Profile() {
           title={
             tab === "saves"
               ? "还没有收藏的笔记"
-              : tab === "replies"
-                ? "还没有参与讨论"
-                : "还没有发布笔记"
+              : tab === "likes"
+                ? "还没有喜欢的笔记"
+                : tab === "replies"
+                  ? "还没有参与讨论"
+                  : "还没有发布笔记"
           }
           description="去校园里逛逛，找到你的第一个话题。"
           action={

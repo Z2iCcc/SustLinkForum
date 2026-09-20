@@ -8,7 +8,7 @@ async function setup(page:Page){
  await page.goto('/board/market');
  await page.evaluate(()=>document.fonts.ready);
 }
-test('market list opens full detail, restores browsing and updates saves without image replacement',async({page})=>{
+test('market list opens full detail, restores browsing and updates counts after saving in detail',async({page})=>{
  await setup(page);
  await expect(page.getByRole('button',{name:'分类',exact:true})).toHaveAttribute('aria-expanded','false');
  await page.getByRole('button',{name:'分类',exact:true}).click();
@@ -16,21 +16,19 @@ test('market list opens full detail, restores browsing and updates saves without
  await expect(page).toHaveURL(/price=asc/);
  const card=page.locator('[data-product="market-demo-0"]');
  await card.scrollIntoViewIfNeeded();
- const image=await card.locator('img').first().elementHandle();
- const box=await image!.boundingBox();
- await card.getByRole('button',{name:'收藏认真做过笔记的高数教材'}).click();
- expect(await image!.evaluate(e=>e.isConnected)).toBe(true);
- expect(await image!.boundingBox()).toEqual(box);
- await expect(card).toContainText('13 已收藏');
+ await expect(card.getByRole("button")).toHaveCount(0);
+ await expect(card.locator(".market-byline")).toContainText("12 已收藏");
  const y=await page.locator('#forum-main').evaluate(e=>e.scrollTop);
  await card.locator('.market-product-link').click();
  await expect(page).toHaveURL(/topic\/market-demo-0/);
  await expect(page.locator('.market-detail')).toBeVisible();
  await expect(page.locator('dialog[open]')).toHaveCount(0);
+ await page.locator('.original-post .reaction-save').click();
  await expect(page.getByRole('button',{name:'已收藏',exact:true})).toHaveAttribute('aria-pressed','true');
  await page.locator('.compose-back').click();
  await expect(page).toHaveURL(/price=asc/);
  await expect.poll(()=>page.locator('#forum-main').evaluate(e=>e.scrollTop)).toBeCloseTo(y,0);
+ await expect(card.locator('.market-byline')).toContainText('13 已收藏');
 });
 test('seller comment permissions and public replies share forum storage',async({page})=>{
  await setup(page);await page.goto('/topic/market-demo-1');
