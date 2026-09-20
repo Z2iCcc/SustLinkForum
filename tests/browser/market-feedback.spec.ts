@@ -59,10 +59,11 @@ test('wanted list uses text rows while an uploaded photo still opens in the deta
   await expect(page).toHaveURL(/\/topic\//);
   const detailUrl=page.url();
   await page.goto('/board/market?mode=wanted');
-  await expect(page.locator('.market-wanted-list')).toContainText('预算 ¥80');
+  await expect(page.locator('.market-wanted-list .market-price-row')).toHaveCount(0);
   await expect(page.locator('.market-wanted-list img, .market-wanted-list .market-no-image')).toHaveCount(0);
   await page.getByRole('link',{name:/求购一台科学计算器/}).click();
   await expect(page).toHaveURL(detailUrl);
+  await expect(page.locator('.market-detail-price')).toHaveText('预算 ¥80');
   const photo=page.getByRole('button',{name:'放大图片 calculator.png'});
   await expect(photo.locator('img')).toHaveAttribute('src',/^blob:/);
   await photo.click();
