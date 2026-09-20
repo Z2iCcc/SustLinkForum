@@ -118,7 +118,8 @@ export function ForumHome() {
     const next = new URLSearchParams(params);
     next.set(key, value);
     if (key !== "page") next.delete("page");
-    setParams(next);
+    // Sorting changes the list in place; pagination still starts at the top.
+    setParams(next, key === "sort" ? { state: { restoreScroll: readingScrollY() } } : undefined);
   }
   if (boardId && !board) return <NotFound />;
   if (boardId === "market") return <MarketHome />;

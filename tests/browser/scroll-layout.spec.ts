@@ -52,6 +52,30 @@ test("desktop wheel scrolls only the hovered column, including at its boundaries
   await page.screenshot({ path: "artifacts/scroll-layout/columns.png" });
 });
 
+test("switching list sorting preserves the reading position on mobile and desktop", async ({page}) => {
+  for (const width of [687,1468]) {
+    await page.setViewportSize({width,height:694});
+    for (const path of ['/forum','/board/life']) {
+      await setup(page,path);
+      const readingY=()=>page.evaluate(()=>matchMedia('(min-width: 761px)').matches?document.getElementById('forum-main')!.scrollTop:scrollY);
+      await page.evaluate(()=> (matchMedia('(min-width: 761px)').matches?document.getElementById('forum-main')!:window).scrollTo(0,100));
+      await expect.poll(readingY).toBe(100);
+      for(const [label,sort] of [['最新发布','new'],['热门讨论','hot'],['最近回复','reply']]) {
+        const tab=page.getByRole('button',{name:label,exact:true});
+        const before=(await tab.boundingBox())!.y;
+        await tab.click();
+        await expect(page).toHaveURL(new RegExp('sort='+sort));
+        await expect(tab).toHaveAttribute('aria-pressed','true');
+        await expect.poll(readingY).toBe(100);
+        expect((await tab.boundingBox())!.y).toBeCloseTo(before,0);
+      }
+      await page.goBack();
+      await expect(page).toHaveURL(/sort=hot/);
+      await expect.poll(readingY).toBe(100);
+    }
+  }
+});
+
 test("list titles use 15px and browser back restores the center reading position", async ({
   page,
 }) => {
