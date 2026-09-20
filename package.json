@@ -1,6 +1,6 @@
 {
   "name": "sustlink-forum-web",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "type": "module",
   "scripts": {
@@ -8,7 +8,7 @@
     "typecheck": "tsc --noEmit",
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview --host 127.0.0.1 --port 5174",
-    "test": "node --experimental-strip-types --test tests/store.test.ts tests/publishing.test.ts",
+    "test": "node --experimental-strip-types --test tests/store.test.ts tests/publishing.test.ts tests/market.test.ts",
     "test:e2e": "playwright test",
     "format": "prettier --write src tests *.ts *.json *.md index.html"
   },
