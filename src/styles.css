@@ -2254,9 +2254,6 @@ a.board-tag:hover {
     padding: 17px 14px;
     gap: 10px;
   }
-  .topic-row > .avatar {
-    display: none;
-  }
   .topic-meta {
     gap: 6px;
     font-size: 10px;

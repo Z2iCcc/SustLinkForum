@@ -1592,10 +1592,6 @@
     --panel-inset: 16px;
     --list-inset: 14px;
   }
-  .forum-app .topic-meta {
-    grid-template-columns: minmax(0, 1fr);
-    row-gap: 6px;
-  }
   .forum-app .global-search > button {
     display: none;
   }
