@@ -28,7 +28,25 @@
   min-width: 0;
 }
 .market-detail-actions .market-policy label { margin: 0; min-height: 34px; }
+.forum-app .topic-detail .market-chat-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 34px;
+  padding: 0 4px;
+  border: 0;
+  background: transparent;
+  color: #356d9c;
+  font-size: 14px;
+  line-height: 20px;
+  text-decoration: none;
+  outline: none;
+  transition: color .18s;
+}
+.forum-app .topic-detail .market-chat-link:is(:hover, :active, :focus-visible) { color: #244e73; }
+.forum-app .topic-detail .market-chat-link:focus-visible svg { filter: drop-shadow(0 0 3px #6c9fbd); }
 @media (forced-colors: active) {
+  .forum-app .topic-detail .market-chat-link:focus-visible,
   .forum-app .topic-detail .post-actions button.detail-action:focus-visible {
     outline: 1px solid Highlight;
   }
