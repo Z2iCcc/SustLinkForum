@@ -20,9 +20,9 @@
 .market-wanted-list{background:#fff;border:1px solid #e2eaf0;border-radius:7px;overflow:hidden}
 .market-wanted-list .market-card{border:0;border-bottom:1px solid #e8edf0;border-radius:0;padding:14px 20px 10px}
 .market-wanted-list .market-card:last-child{border-bottom:0}
-.market-wanted-list .market-product-link{display:flex;align-items:baseline;justify-content:space-between;gap:8px 20px;flex-wrap:wrap;padding:0}
+.market-wanted-list .market-product-link{display:grid;grid-template-columns:minmax(0,1fr) min(40%,128px);align-items:baseline;gap:8px 20px;padding:0}
 .market-wanted-list .market-card h2{font-size:15px;line-height:24px;margin:0;white-space:normal;overflow-wrap:anywhere}
-.market-wanted-list .market-price-row{margin:0;flex-shrink:0}
+.market-wanted-list .market-price-row{margin:0;min-width:0;justify-content:flex-start;text-align:left;overflow-wrap:anywhere}
 .market-wanted-list .market-byline{padding:4px 0 0;min-height:28px}
 .market-card{border:1px solid #e2eaf0;border-radius:5px;background:#fff;overflow:hidden;min-width:0}
 .market-product-link{display:block;padding:5px 5px 0;text-decoration:none;color:inherit}
