@@ -83,8 +83,13 @@
 .forum-app .messages-panel .notice-row { padding-block: 14px; gap: 12px; }
 .forum-app .messages-panel .notice-row :is(p, small) { margin-top: 3px; }
 
-/* Match the existing 760px single-column breakpoint; categories remain in the toolbar. */
+/* Switch the grid and sidebars together at the document-scroll breakpoint.
+   The legacy 720px component rules must not leave a sidebar-width column at 721–760px. */
 @media (max-width: 760px) {
+  .forum-app > .forum-layout {
+    display: block;
+    width: calc(100% - 28px);
+  }
   .forum-app .left-sidebar { display: none; }
 }
 
