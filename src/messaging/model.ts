@@ -2,6 +2,13 @@ import type { ForumState, Topic } from '../types.ts';
 import { ME } from '../seed.ts';
 export interface ChatMessage { id:string; authorId:string; body:string; createdAt:number }
 export interface Conversation { topicId:string; sellerId:string; title:string; messages:ChatMessage[]; draft:string; readAt:number }
+export function unreadMessageCount(state:ForumState):number {
+  return state.notices.filter(n=>!n.read).length + (state.conversations??[]).reduce((sum,c)=>sum+c.messages.filter(m=>m.authorId!==ME&&m.createdAt>c.readAt).length,0);
+}
+export function markAllMessagesRead(state:ForumState):ForumState {
+  const now=Date.now();
+  return {...state,notices:state.notices.map(n=>({...n,read:true})),conversations:state.conversations?.map(c=>({...c,readAt:c.messages.reduce((time,m)=>Math.max(time,m.createdAt),Math.max(now,c.readAt))}))};
+}
 export function validConversations(value:unknown):boolean {
   return value===undefined || (Array.isArray(value)&&value.every(c=>c&&typeof c.topicId==='string'&&typeof c.sellerId==='string'&&typeof c.title==='string'&&typeof c.draft==='string'&&Number.isFinite(c.readAt)&&Array.isArray(c.messages)&&c.messages.every((m:ChatMessage)=>m&&typeof m.id==='string'&&[ME,c.sellerId].includes(m.authorId)&&typeof m.body==='string'&&m.body.trim().length>0&&m.body.length<=3000&&Number.isFinite(m.createdAt))));
 }

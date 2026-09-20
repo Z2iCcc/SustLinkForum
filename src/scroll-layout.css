@@ -44,13 +44,47 @@
   padding: 6px 10px;
 }
 
-/* Match the reply and private-message editors without a moving outer outline. */
-.forum-app .market-chat .chat-composer textarea:is(:focus, :focus-visible),
+/* Existing reply editor: 24px body line height and a quiet focus glow. */
 .forum-app .topic-detail .reply-editor textarea:is(:focus, :focus-visible) {
   outline: none;
   border-color: #a9beca;
   background-color: #fdfefe;
   box-shadow: 0 0 0 2px rgb(113 158 185 / 10%);
+}
+
+/* New text-entry fields share the header search's soft glow, without an outline. */
+.forum-app :is(.market-search input, .chat-composer textarea, .publishing-panel .pub-input) {
+  transition: border-color .18s, background-color .18s, box-shadow .18s;
+}
+.forum-app :is(.market-search input, .chat-composer textarea, .publishing-panel .pub-input):is(:focus, :focus-visible) {
+  outline: none;
+  background-color: #fbfdfe;
+  border-color: #6c9fbd;
+  box-shadow: 0 0 0 4px oklch(73% .06 231 / .16);
+}
+
+/* Messages: compact vertical insets; automatic height keeps wrapped text usable. */
+.forum-app .messages-panel .market-conversations { padding: 16px 20px; }
+.messages-panel .market-conversations h2 { margin-bottom: 10px; }
+.messages-panel .market-conversations > a { padding: 10px 0; }
+.messages-panel .market-conversations > a > span { margin: 3px 0; }
+.messages-panel .market-conversations p {
+  line-height: 20px;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+.forum-app .messages-heading { padding-block: 16px; gap: 12px; flex-wrap: wrap; }
+.messages-heading .eyebrow { margin-bottom: 4px; }
+.messages-heading p:not(.eyebrow) { margin-top: 4px; }
+.messages-heading > .text-button { flex-shrink: 0; }
+.forum-app .messages-panel .notice-row { padding-block: 14px; gap: 12px; }
+.forum-app .messages-panel .notice-row :is(p, small) { margin-top: 3px; }
+
+/* Match the existing 760px single-column breakpoint; categories remain in the toolbar. */
+@media (max-width: 760px) {
+  .forum-app .left-sidebar { display: none; }
 }
 
 .chat-history:focus-visible {
@@ -118,6 +152,7 @@
 }
 
 @media (forced-colors: active) {
+  .forum-app :is(.market-search input, .chat-composer textarea, .publishing-panel .pub-input):focus-visible,
   .forum-app .market-chat .chat-composer textarea:focus-visible,
   .forum-app .topic-detail .reply-editor textarea:focus-visible {
     outline: 1px solid Highlight;

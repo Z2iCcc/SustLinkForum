@@ -1,6 +1,7 @@
 import { MarketHome, MarketDetailContent, MarketActions } from "./market/Market";
 import { canComment } from "./market/model";
 import { ConversationList } from "./messaging/Messaging";
+import { markAllMessagesRead, unreadMessageCount } from "./messaging/model";
 import { readingScrollY, scrollReadingTo } from "./scroll";
 import { useEffect, useState, useRef, type FormEvent } from "react";
 import {
@@ -1074,7 +1075,7 @@ export function Messages() {
   const { state, update } = useForum();
   if (!state.loggedIn) return <LoginRequired />;
   return (
-    <section className="content-panel">
+    <section className="content-panel messages-panel">
       <ConversationList />
       <div className="page-heading messages-heading">
         <div>
@@ -1084,13 +1085,8 @@ export function Messages() {
         </div>
         <button
           className="text-button"
-          disabled={state.notices.every((n) => n.read)}
-          onClick={() =>
-            update((s) => ({
-              ...s,
-              notices: s.notices.map((n) => ({ ...n, read: true })),
-            }))
-          }
+          disabled={unreadMessageCount(state) === 0}
+          onClick={() => update(markAllMessagesRead)}
         >
           <Check size={15} />
           全部已读

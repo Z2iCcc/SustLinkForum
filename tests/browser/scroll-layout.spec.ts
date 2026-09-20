@@ -71,13 +71,13 @@ test("list titles use 15px and browser back restores the center reading position
   await expect.poll(() => main.evaluate((e) => e.scrollTop)).toBeCloseTo(y, 0);
 });
 
-test("chat scrolls history while the composer stays still and focus matches replies", async ({
+test("chat scrolls history while the composer stays still and focus matches header search", async ({
   page,
 }) => {
   await setup(page, "/topic/market-demo-0");
-  const reply = page.getByLabel("回复内容", { exact: true });
-  await reply.focus();
-  const replyShadow = await reply.evaluate(
+  await page.getByLabel("搜索全站帖子").focus();
+  await expect(page.locator('.global-search')).toHaveCSS('border-color','rgb(108, 159, 189)');
+  const searchShadow = await page.locator('.global-search').evaluate(
     (e) => getComputedStyle(e).boxShadow,
   );
   await page.getByRole("link", { name: "聊一聊", exact: true }).click();
@@ -89,8 +89,8 @@ test("chat scrolls history while the composer stays still and focus matches repl
     input = page.getByLabel("消息", { exact: true });
   await input.focus();
   await expect(input).toHaveCSS("outline-style", "none");
-  await expect(input).toHaveCSS("box-shadow", replyShadow);
-  expect(replyShadow).not.toBe("none");
+  await expect(input).toHaveCSS("box-shadow", searchShadow);
+  expect(searchShadow).not.toBe("none");
   const composer = await page.locator(".chat-composer").boundingBox();
   const bottom = await log.evaluate((e) => e.scrollTop);
   await log.hover();

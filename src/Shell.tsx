@@ -24,6 +24,7 @@ import { useForum } from "./context";
 import campusUrl from "./illustrations/campus.svg";
 import { composeOrigin } from "./navigation";
 import { categoryName } from "./categories";
+import { unreadMessageCount } from "./messaging/model";
 export function Shell() {
   const { state, login, update, requireLogin } = useForum();
   const navigate = useNavigate();
@@ -31,7 +32,7 @@ export function Shell() {
   const [query, setQuery] = useState("");
   const searchInput = useRef<HTMLInputElement>(null);
   const me = state.users.find((u) => u.id === ME)!;
-  const unread = state.notices.filter((n) => !n.read).length + (state.conversations??[]).reduce((sum,c)=>sum+c.messages.filter(m=>m.authorId!==ME&&m.createdAt>c.readAt).length,0);
+  const unread = unreadMessageCount(state);
   const board = boards.find((b) => location.pathname === `/board/${b.id}`);
   const detailTopic = state.topics.find(t=>location.pathname==='/topic/'+t.id);
   const isMarket = board?.id==='market' || detailTopic?.boardId==='market' || location.pathname.startsWith('/messages/chat/');
