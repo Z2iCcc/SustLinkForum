@@ -598,6 +598,7 @@ export function BoardPublisher({
           </div>
           {p.board === "market" && (
             <>
+              <fieldset className="market-publish-policy"><legend>留言权限</legend>{(["everyone", "seller"] as const).map(value=><label key={value}><input type="radio" name="publish-comment-policy" checked={(p.commentPolicy??"everyone")===value} onChange={()=>change({}, {commentPolicy:value})}/>{value==="everyone"?"所有人可留言":"仅卖家可留言"}</label>)}</fieldset>
               <Section title={p.mode === "sale" ? "物品照片" : "参考图片"}>
                 <div id="pub-media-section" tabIndex={-1}>
                   {media()}

@@ -1,0 +1,54 @@
+/* Invisible 34px hit areas, shared across every topic and reply.
+   Existing reaction fills, mark animation and pressed scaling stay in refinements.css. */
+.forum-app .topic-detail .post-actions button.detail-action {
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 34px;
+  width: 34px;
+  height: 34px;
+  min-height: 34px;
+  padding: 0;
+  margin-left: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  outline: none;
+}
+.forum-app .topic-detail .post-actions button.detail-action.delete-note { margin-left: auto; }
+.forum-app .topic-detail .detail-action:focus-visible svg {
+  filter: drop-shadow(0 0 3px #6c9fbd);
+}
+.market-detail-actions .detail-reactions { margin: 0; }
+.market-detail-actions .market-policy {
+  display: flex;
+  align-items: center;
+  gap: 4px 14px;
+  flex-wrap: wrap;
+  min-height: 34px;
+  min-width: 0;
+}
+.market-detail-actions .market-policy label { margin: 0; min-height: 34px; }
+.forum-app .topic-detail .market-chat-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 34px;
+  padding: 0 4px;
+  border: 0;
+  background: transparent;
+  color: #356d9c;
+  font-size: 14px;
+  line-height: 20px;
+  text-decoration: none;
+  outline: none;
+  transition: color .18s;
+}
+.forum-app .topic-detail .market-chat-link:is(:hover, :active, :focus-visible) { color: #244e73; }
+.forum-app .topic-detail .market-chat-link:focus-visible svg { filter: drop-shadow(0 0 3px #6c9fbd); }
+@media (forced-colors: active) {
+  .forum-app .topic-detail .market-chat-link:focus-visible,
+  .forum-app .topic-detail .post-actions button.detail-action:focus-visible {
+    outline: 1px solid Highlight;
+  }
+  .forum-app .topic-detail .detail-action[aria-pressed=true] svg { fill: Highlight; stroke: Highlight; }
+}

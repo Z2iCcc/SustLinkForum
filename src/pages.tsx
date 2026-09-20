@@ -1,3 +1,9 @@
+import { MarketHome, MarketDetailContent, MarketActions } from "./market/Market";
+import { canComment } from "./market/model";
+import { DetailAction, TopicReactions } from "./DetailActions";
+import { ConversationList } from "./messaging/Messaging";
+import { markAllMessagesRead, unreadMessageCount } from "./messaging/model";
+import { readingScrollY, scrollReadingTo } from "./scroll";
 import { useEffect, useState, useRef, type FormEvent } from "react";
 import {
   Link,
@@ -11,7 +17,6 @@ import {
   ArrowUpRight,
   Search,
   Heart,
-  Bookmark,
   MessageCircle,
   Quote,
   X,
@@ -38,7 +43,7 @@ import {
   deleteReply,
   replyFloor,
 } from "./store";
-import { TITLE_LIMIT, titleLength, limitTitle, formatCount } from "./format";
+import { TITLE_LIMIT, titleLength, limitTitle } from "./format";
 import {
   Avatar,
   AuthorName,
@@ -48,6 +53,7 @@ import {
   PageNav,
   relativeTime,
   TopicList,
+  PostBody,
 } from "./components";
 import type {
   Attachment,
@@ -102,7 +108,7 @@ export function ForumHome() {
     if (nextCategory) next.set("category", nextCategory);
     else next.delete("category");
     next.delete("page");
-    setParams(next, { state: { restoreScroll: window.scrollY } });
+    setParams(next, { state: { restoreScroll: readingScrollY() } });
   }
   const page = Math.min(
     Math.max(1, Number(params.get("page")) || 1),
@@ -112,9 +118,11 @@ export function ForumHome() {
     const next = new URLSearchParams(params);
     next.set(key, value);
     if (key !== "page") next.delete("page");
-    setParams(next);
+    // Sorting changes the list in place; pagination still starts at the top.
+    setParams(next, key === "sort" ? { state: { restoreScroll: readingScrollY() } } : undefined);
   }
   if (boardId && !board) return <NotFound />;
+  if (boardId === "market") return <MarketHome />;
   return (
     <>
       <div className={`forum-banner ${board ? "board-banner" : ""}`}>
@@ -197,7 +205,7 @@ export function ForumHome() {
           total={topics.length}
           onChange={(p) => {
             setFilter("page", String(p));
-            window.scrollTo(0, 0);
+            scrollReadingTo(0);
           }}
         />
       </section>
@@ -218,7 +226,7 @@ export function SearchPage() {
     if (nextCategory) next.set("category", nextCategory);
     else next.delete("category");
     next.delete("page");
-    setParams(next, { state: { restoreScroll: window.scrollY } });
+    setParams(next, { state: { restoreScroll: readingScrollY() } });
   }
   const [input, setInput] = useState(query);
   useEffect(() => setInput(query), [query]);
@@ -330,7 +338,7 @@ function QuoteBlock({ topic, quoteId }: { topic: Topic; quoteId: string }) {
         className="content-hit-link"
         to={`/topic/${topic.id}#${quoteId === topic.id ? "floor-1" : quoteId}`}
       >
-        {author.name} · #{floor}
+        {author.name} #{floor}
         <ArrowUpRight size={12} />
       </TopicLink>
       <p>
@@ -378,10 +386,12 @@ export function TopicPage() {
   if (!topic) return <NotFound />;
   const board = boards.find((b) => b.id === topic.boardId)!,
     author = identity(state, topic, topic.authorId);
+  const isMarket = topic.boardId === "market";
+  const replyAllowed = canComment(topic, ME);
   const replies = state.replies.filter((r) => r.topicId === topic.id);
   const visible = selectReplies(state, topic, replySort, onlyAuthor);
   function quote(target: string) {
-    if (!requireLogin()) return;
+    if (!requireLogin() || !replyAllowed) return;
     setQuoteId(target);
     setTimeout(() => {
       input.current?.focus();
@@ -392,15 +402,6 @@ export function TopicPage() {
         block: "center",
       });
     }, 0);
-  }
-  function toggle(key: "likes" | "saves") {
-    if (!requireLogin()) return;
-    update((s) => ({
-      ...s,
-      [key]: s[key].includes(topic!.id)
-        ? s[key].filter((v) => v !== topic!.id)
-        : [...s[key], topic!.id],
-    }));
   }
   function submit(e: FormEvent) {
     e.preventDefault();
@@ -435,15 +436,15 @@ export function TopicPage() {
       {hasOrigin ? (
         <button className="breadcrumb compose-back" onClick={exitTopic}>
           <ArrowLeft size={14} />
-          {sourceName}
+          {isMarket ? "返回" : sourceName}
         </button>
       ) : (
         <Link className="breadcrumb" to={`/board/${board.id}`}>
           <ArrowLeft size={14} />
-          {board.name}
+          {isMarket ? "返回" : board.name}
         </Link>
       )}
-      <article className="content-panel topic-detail">
+      <article className={`content-panel topic-detail ${isMarket ? "market-detail" : ""}`}>
         <header className="detail-heading">
           <div className="detail-tags">
             <span className="board-tag" style={{ color: board.color }}>
@@ -469,7 +470,7 @@ export function TopicPage() {
             <Avatar {...author} />
             <div>
               <strong>{author.name}</strong>
-              <span className="author-badge">楼主</span>
+              <span className="author-badge">{isMarket ? "卖家" : "楼主"}</span>
               <small>
                 <time
                   dateTime={new Date(topic.createdAt).toISOString()}
@@ -481,46 +482,26 @@ export function TopicPage() {
             </div>
             <span className="floor-number">#1</span>
           </div>
-          <div className="post-body">{topic.body}</div>
-          <Attachments items={topic.attachments} />
+          {isMarket ? <MarketDetailContent topic={topic}/> : <><PostBody body={topic.body}/><Attachments items={topic.attachments} /></>}
+          {isMarket && <MarketActions topic={topic}/>}
           <div className="post-actions">
-            <button
-              className={`reaction-like ${state.likes.includes(topic.id) ? "is-active" : ""}`}
-              aria-pressed={state.likes.includes(topic.id)}
-              onClick={() => toggle("likes")}
-            >
-              <Heart size={16} />
-              点赞 {topic.baseLikes + Number(state.likes.includes(topic.id))}
-            </button>
-            <button
-              className={`reaction-save ${state.saves.includes(topic.id) ? "is-active" : ""}`}
-              aria-pressed={state.saves.includes(topic.id)}
-              onClick={() => toggle("saves")}
-            >
-              <Bookmark size={16} />
-              {state.saves.includes(topic.id) ? "已收藏" : "收藏"}
-            </button>
-            <button onClick={() => quote(topic.id)}>
-              <Quote size={16} />
-              引用
-            </button>
+            {!isMarket && <><TopicReactions topic={topic}/>
+            <DetailAction icon={Quote} label="引用" onClick={() => quote(topic.id)} />
+            </>}
             {state.loggedIn && topic.authorId === ME && (
-              <button
+              <DetailAction icon={Trash2} label="删除"
                 className="delete-note"
                 onClick={() => {
                   setDeleteTarget(null);
                   deleteDialog.current?.showModal();
                 }}
-              >
-                <Trash2 size={15} />
-                删除
-              </button>
+              />
             )}
           </div>
         </section>
         <div className="replies-heading">
           <h2 ref={repliesHeading} tabIndex={-1}>
-            回复 <span>{replies.length}</span>
+            {isMarket ? "留言" : "回复"} <span>{replies.length}</span>
           </h2>
           <div className="reply-view-controls">
             <ReplySortSelect
@@ -530,7 +511,7 @@ export function TopicPage() {
                 if (value === "oldest") next.delete("replySort");
                 else next.set("replySort", value);
                 setParams(next, {
-                  state: { ...location.state, restoreScroll: window.scrollY },
+                  state: { ...location.state, restoreScroll: readingScrollY() },
                 });
               }}
             />
@@ -540,7 +521,7 @@ export function TopicPage() {
                 checked={onlyAuthor}
                 onChange={(e) => setOnlyAuthor(e.target.checked)}
               />
-              只看楼主
+              {isMarket ? "只看卖家" : "只看楼主"}
             </label>
           </div>
         </div>
@@ -566,47 +547,39 @@ export function TopicPage() {
                 <span className="floor-number">#{floor}</span>
               </div>
               {r.quoteId && <QuoteBlock topic={topic} quoteId={r.quoteId} />}
-              <div className="post-body">{r.body}</div>
+              <PostBody body={r.body}/>
               <Attachments items={r.attachments} />
               <div className="reply-actions post-actions">
-                <button
+                <DetailAction icon={Heart}
                   className={`reaction-like ${state.replyLikes?.includes(r.id) ? "is-active" : ""}`}
-                  aria-label={`点赞回复 #${floor}，${replyLikeCount(state, r)} 个赞`}
+                  label={`点赞回复 #${floor}，${replyLikeCount(state, r)} 个赞`}
                   aria-pressed={state.replyLikes?.includes(r.id) ?? false}
                   onClick={() => {
                     if (requireLogin()) update((s) => toggleReplyLike(s, r.id));
                   }}
-                >
-                  <Heart size={15} />
-                  <span>点赞 {formatCount(replyLikeCount(state, r))}</span>
-                </button>
-                <button
+                />
+                <DetailAction icon={Quote} label="引用回复"
                   className="reply-quote text-button"
+                  disabled={!replyAllowed}
                   onClick={() => quote(r.id)}
-                >
-                  <Quote size={14} />
-                  引用回复
-                </button>
+                />
                 {state.loggedIn &&
                   (r.authorId === ME || topic.authorId === ME) && (
-                    <button
+                    <DetailAction icon={Trash2} label="删除"
                       className="delete-note"
                       onClick={() => {
                         setDeleteTarget(r.id);
                         deleteDialog.current?.showModal();
                       }}
-                    >
-                      <Trash2 size={15} />
-                      删除
-                    </button>
+                    />
                   )}
               </div>
             </section>
           );
         })}
-        <form className="reply-editor" onSubmit={submit}>
+        {replyAllowed ? <form className="reply-editor" onSubmit={submit}>
           <h3>
-            {topic.boardId === "tree" ? "留下一条匿名回复" : "加入这场讨论"}
+            {isMarket ? "向卖家留言" : topic.boardId === "tree" ? "留下一条匿名回复" : "加入这场讨论"}
           </h3>
           {quoteId && (
             <div className="reply-quote-preview">
@@ -669,7 +642,7 @@ export function TopicPage() {
               </button>
             )}
           </div>
-        </form>
+        </form> : <p className="market-comments-closed">卖家已关闭公开留言，可通过「聊一聊」咨询。</p>}
         <dialog
           ref={deleteDialog}
           className="delete-dialog"
@@ -801,7 +774,7 @@ export function NewTopic() {
       state: {
         ...location.state,
         composeInitialized: true,
-        restoreScroll: window.scrollY,
+        restoreScroll: readingScrollY(),
       },
     });
   }, []);
@@ -1064,7 +1037,8 @@ export function Messages() {
   const { state, update } = useForum();
   if (!state.loggedIn) return <LoginRequired />;
   return (
-    <section className="content-panel">
+    <section className="content-panel messages-panel">
+      <ConversationList />
       <div className="page-heading messages-heading">
         <div>
           <p className="eyebrow">YOU HAVE A LITTLE MAIL</p>
@@ -1073,13 +1047,8 @@ export function Messages() {
         </div>
         <button
           className="text-button"
-          disabled={state.notices.every((n) => n.read)}
-          onClick={() =>
-            update((s) => ({
-              ...s,
-              notices: s.notices.map((n) => ({ ...n, read: true })),
-            }))
-          }
+          disabled={unreadMessageCount(state) === 0}
+          onClick={() => update(markAllMessagesRead)}
         >
           <Check size={15} />
           全部已读
@@ -1296,7 +1265,7 @@ export function Profile() {
                     </p>
                     <small className="reply-history-meta">
                       <AuthorName name={who.name} />
-                      <span>· #{floor}</span>
+                      <span>#{floor}</span>
                     </small>
                   </article>
                 );

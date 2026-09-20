@@ -1,3 +1,5 @@
+import type { MarketData } from "./market/model";
+import type { Conversation } from "./messaging/model";
 import type { PublishingData } from "./publishing/model";
 export type BoardId =
   "life" | "study" | "lost" | "clubs" | "market" | "tree" | "notice";
@@ -22,6 +24,7 @@ export interface User {
   avatarId?: string;
 }
 export interface Topic {
+  market?: MarketData;
   publishing?: PublishingData;
   categoryId?: string;
   id: string;
@@ -68,6 +71,7 @@ export interface Draft {
   attachments?: Attachment[];
 }
 export interface ForumState {
+  conversations?: Conversation[];
   publishDrafts?: Record<string, Draft>;
   version: 1;
   users: User[];

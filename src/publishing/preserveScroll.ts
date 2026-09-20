@@ -1,16 +1,16 @@
 import { flushSync } from "react-dom";
+import { mainScrollElement, readingScrollY, scrollReadingTo } from "../scroll";
 
 /** Swap compose forms without letting focus or scroll anchoring move the page. */
 export function preserveComposeScroll(change: () => void) {
-  const x = window.scrollX;
-  const y = window.scrollY;
+  const y = readingScrollY();
   const focused = document.activeElement;
   const switchingBoard =
     focused?.id === "pub-board" ||
     (focused instanceof HTMLSelectElement &&
       focused.closest(".compose-top") &&
       focused.closest("label")?.textContent?.trim().startsWith("发布到"));
-  const root = document.documentElement;
+  const root = mainScrollElement() ?? document.documentElement;
   const anchoring = root.style.overflowAnchor;
   root.style.overflowAnchor = "none";
   try {
@@ -23,7 +23,7 @@ export function preserveComposeScroll(change: () => void) {
         );
       next?.focus({ preventScroll: true });
     }
-    window.scrollTo({ left: x, top: y, behavior: "instant" });
+    scrollReadingTo(y);
   } finally {
     root.style.overflowAnchor = anchoring;
   }

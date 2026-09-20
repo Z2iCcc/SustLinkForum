@@ -20,6 +20,12 @@ import { identity } from "./store";
 import { AttachmentSummary, AttachmentIndicators, useAssetUrl } from "./Media";
 import { formatCount } from "./format";
 import { TopicLink } from "./TopicLink";
+export function PostBody({ body }: { body: string }) {
+  // Blank lines delimit paragraphs; single line breaks stay inside paragraphs.
+  return <div className="post-body">{body.split(/\r?\n[ \t]*\r?\n(?:[ \t]*\r?\n)*/).map((paragraph, index) =>
+    <p key={index}>{paragraph}</p>
+  )}</div>;
+}
 export function Logo({ to = "/" }: { to?: string }) {
   return (
     <Link className="brand" to={to} aria-label="SustLink 校园首页">

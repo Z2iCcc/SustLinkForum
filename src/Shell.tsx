@@ -24,6 +24,7 @@ import { useForum } from "./context";
 import campusUrl from "./illustrations/campus.svg";
 import { composeOrigin } from "./navigation";
 import { categoryName } from "./categories";
+import { unreadMessageCount } from "./messaging/model";
 export function Shell() {
   const { state, login, update, requireLogin } = useForum();
   const navigate = useNavigate();
@@ -31,14 +32,17 @@ export function Shell() {
   const [query, setQuery] = useState("");
   const searchInput = useRef<HTMLInputElement>(null);
   const me = state.users.find((u) => u.id === ME)!;
-  const unread = state.notices.filter((n) => !n.read).length;
+  const unread = unreadMessageCount(state);
   const board = boards.find((b) => location.pathname === `/board/${b.id}`);
+  const detailTopic = state.topics.find(t=>location.pathname==='/topic/'+t.id);
+  const isMarket = board?.id==='market' || detailTopic?.boardId==='market' || location.pathname.startsWith('/messages/chat/');
+  const isChat = location.pathname.startsWith('/messages/chat/');
   function search(e: FormEvent) {
     e.preventDefault();
     navigate(`/search?q=${encodeURIComponent(query.trim())}`);
   }
   return (
-    <div className="forum-app">
+    <div className={`forum-app ${isMarket?"market-shell":""}`}>
       <a className="skip-link" href="#forum-main">
         跳到主要内容
       </a>
@@ -141,7 +145,7 @@ export function Shell() {
             交互原型 / 本浏览器保存
           </div>
         </aside>
-        <main id="forum-main" className="forum-main">
+        <main id="forum-main" className={`forum-main ${isChat ? 'chat-main' : ''}`} tabIndex={-1}>
           <Outlet />
         </main>
         <aside className="right-sidebar">
@@ -149,7 +153,7 @@ export function Shell() {
             className="primary full new-topic"
             onClick={() => {
               const params = new URLSearchParams(location.search);
-              const selectedBoard = board?.id ?? params.get("board") ?? "";
+              const selectedBoard = board?.id ?? detailTopic?.boardId ?? (isMarket?"market":null) ?? params.get("board") ?? "";
               const category = params.get("category") ?? "";
               const target = new URLSearchParams();
               if (boards.some((b) => b.id === selectedBoard))
@@ -166,7 +170,7 @@ export function Shell() {
             }}
           >
             <Plus size={18} />
-            发布新笔记
+            {isMarket ? "发布闲置" : "发布新笔记"}
           </button>
           <section className="side-panel welcome-panel">
             <p className="eyebrow">A PLACE TO BELONG</p>

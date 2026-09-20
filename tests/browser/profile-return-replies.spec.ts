@@ -69,7 +69,11 @@ test("personal entries return to the same tab, page and scroll, including after 
     await page.goto(url);
     const entry = page.locator(selector).first();
     await entry.scrollIntoViewIfNeeded();
-    const y = await page.evaluate(() => scrollY);
+    const y = await page.evaluate(() =>
+      innerWidth > 760
+        ? document.getElementById("forum-main")!.scrollTop
+        : scrollY,
+    );
     await entry.click({ position: { x: 8, y: 8 } });
     await expect(page.locator(".forum-main > .breadcrumb")).toHaveText(
       "个人主页",
@@ -79,7 +83,15 @@ test("personal entries return to the same tab, page and scroll, including after 
     await page.reload();
     await page.locator(".forum-main > .breadcrumb").click();
     await expect(page).toHaveURL(url);
-    await expect.poll(() => page.evaluate(() => scrollY)).toBeCloseTo(y, 0);
+    await expect
+      .poll(() =>
+        page.evaluate(() =>
+          innerWidth > 760
+            ? document.getElementById("forum-main")!.scrollTop
+            : scrollY,
+        ),
+      )
+      .toBeCloseTo(y, 0);
     await expect(page.locator(".left-sidebar a[href='/profile']")).toHaveClass(
       /active/,
     );

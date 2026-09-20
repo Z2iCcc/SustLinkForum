@@ -5,6 +5,7 @@ export type PublishBoard = "market" | "clubs" | "lost";
 export type PublishMode =
   "sale" | "wanted" | "event" | "recruit" | "recap" | "missing" | "found";
 export interface PublishingData {
+  commentPolicy?: "everyone" | "seller";
   board: PublishBoard;
   mode: PublishMode;
   category: string;
@@ -103,6 +104,7 @@ export function validPublishing(
   if (!value || typeof value !== "object") return false;
   const p = value as PublishingData;
   if (
+    (p.commentPolicy !== undefined && !["everyone", "seller"].includes(p.commentPolicy)) ||
     !isPublishBoard(p.board) ||
     (board && p.board !== board) ||
     !modes[p.board].some(([m]) => m === p.mode)
