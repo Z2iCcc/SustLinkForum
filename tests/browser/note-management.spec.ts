@@ -144,7 +144,7 @@ test("reply sort follows popup direction and supports keyboard, dismissal and re
   const trigger = page.getByRole("combobox", { name: "回复排序", exact: true });
   const root = page.locator(".reply-sort-select");
   await trigger.evaluate((e) =>
-    window.scrollBy(0, e.getBoundingClientRect().top - 220),
+    document.querySelector('#forum-main')!.scrollBy(0, e.getBoundingClientRect().top - 220),
   );
   await trigger.click();
   await expect(root).toHaveAttribute("data-placement", "bottom");
@@ -159,7 +159,7 @@ test("reply sort follows popup direction and supports keyboard, dismissal and re
   await expect(trigger).toHaveText("点赞最多");
   await page.setViewportSize({ width: 1024, height: 460 });
   await trigger.evaluate((e) =>
-    window.scrollBy(0, e.getBoundingClientRect().top - (innerHeight - 65)),
+    document.querySelector('#forum-main')!.scrollBy(0, e.getBoundingClientRect().top - (innerHeight - 65)),
   );
   await trigger.click();
   await expect(root).toHaveAttribute("data-placement", "top");

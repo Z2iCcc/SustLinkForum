@@ -27,7 +27,7 @@ test('market list opens full detail, restores browsing and updates saves without
  await expect(page).toHaveURL(/topic\/market-demo-0/);
  await expect(page.locator('.market-detail')).toBeVisible();
  await expect(page.locator('dialog[open]')).toHaveCount(0);
- await expect(page.getByRole('button',{name:'取消收藏',exact:true})).toHaveAttribute('aria-pressed','true');
+ await expect(page.getByRole('button',{name:'已收藏',exact:true})).toHaveAttribute('aria-pressed','true');
  await page.locator('.compose-back').click();
  await expect(page).toHaveURL(/price=asc/);
  await expect.poll(()=>page.locator('#forum-main').evaluate(e=>e.scrollTop)).toBeCloseTo(y,0);

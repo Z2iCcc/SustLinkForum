@@ -1,5 +1,6 @@
 import { MarketHome, MarketDetailContent, MarketActions } from "./market/Market";
 import { canComment } from "./market/model";
+import { DetailAction, TopicReactions } from "./DetailActions";
 import { ConversationList } from "./messaging/Messaging";
 import { markAllMessagesRead, unreadMessageCount } from "./messaging/model";
 import { readingScrollY, scrollReadingTo } from "./scroll";
@@ -16,7 +17,6 @@ import {
   ArrowUpRight,
   Search,
   Heart,
-  Bookmark,
   MessageCircle,
   Quote,
   X,
@@ -43,7 +43,7 @@ import {
   deleteReply,
   replyFloor,
 } from "./store";
-import { TITLE_LIMIT, titleLength, limitTitle, formatCount } from "./format";
+import { TITLE_LIMIT, titleLength, limitTitle } from "./format";
 import {
   Avatar,
   AuthorName,
@@ -402,15 +402,6 @@ export function TopicPage() {
       });
     }, 0);
   }
-  function toggle(key: "likes" | "saves") {
-    if (!requireLogin()) return;
-    update((s) => ({
-      ...s,
-      [key]: s[key].includes(topic!.id)
-        ? s[key].filter((v) => v !== topic!.id)
-        : [...s[key], topic!.id],
-    }));
-  }
   function submit(e: FormEvent) {
     e.preventDefault();
     if (!requireLogin()) return;
@@ -493,38 +484,17 @@ export function TopicPage() {
           {isMarket ? <MarketDetailContent topic={topic}/> : <><PostBody body={topic.body}/><Attachments items={topic.attachments} /></>}
           {isMarket && <MarketActions topic={topic}/>}
           <div className="post-actions">
-            {!isMarket && <><button
-              className={`reaction-like ${state.likes.includes(topic.id) ? "is-active" : ""}`}
-              aria-pressed={state.likes.includes(topic.id)}
-              onClick={() => toggle("likes")}
-            >
-              <Heart size={16} />
-              点赞 {topic.baseLikes + Number(state.likes.includes(topic.id))}
-            </button>
-            <button
-              className={`reaction-save ${state.saves.includes(topic.id) ? "is-active" : ""}`}
-              aria-pressed={state.saves.includes(topic.id)}
-              onClick={() => toggle("saves")}
-            >
-              <Bookmark size={16} />
-              {state.saves.includes(topic.id) ? "已收藏" : "收藏"}
-            </button>
-            <button onClick={() => quote(topic.id)}>
-              <Quote size={16} />
-              引用
-            </button>
+            {!isMarket && <><TopicReactions topic={topic}/>
+            <DetailAction icon={Quote} label="引用" onClick={() => quote(topic.id)} />
             </>}
             {state.loggedIn && topic.authorId === ME && (
-              <button
+              <DetailAction icon={Trash2} label="删除"
                 className="delete-note"
                 onClick={() => {
                   setDeleteTarget(null);
                   deleteDialog.current?.showModal();
                 }}
-              >
-                <Trash2 size={15} />
-                删除
-              </button>
+              />
             )}
           </div>
         </section>
@@ -579,37 +549,28 @@ export function TopicPage() {
               <PostBody body={r.body}/>
               <Attachments items={r.attachments} />
               <div className="reply-actions post-actions">
-                <button
+                <DetailAction icon={Heart}
                   className={`reaction-like ${state.replyLikes?.includes(r.id) ? "is-active" : ""}`}
-                  aria-label={`点赞回复 #${floor}，${replyLikeCount(state, r)} 个赞`}
+                  label={`点赞回复 #${floor}，${replyLikeCount(state, r)} 个赞`}
                   aria-pressed={state.replyLikes?.includes(r.id) ?? false}
                   onClick={() => {
                     if (requireLogin()) update((s) => toggleReplyLike(s, r.id));
                   }}
-                >
-                  <Heart size={15} />
-                  <span>点赞 {formatCount(replyLikeCount(state, r))}</span>
-                </button>
-                <button
+                />
+                <DetailAction icon={Quote} label="引用回复"
                   className="reply-quote text-button"
                   disabled={!replyAllowed}
                   onClick={() => quote(r.id)}
-                >
-                  <Quote size={14} />
-                  引用回复
-                </button>
+                />
                 {state.loggedIn &&
                   (r.authorId === ME || topic.authorId === ME) && (
-                    <button
+                    <DetailAction icon={Trash2} label="删除"
                       className="delete-note"
                       onClick={() => {
                         setDeleteTarget(r.id);
                         deleteDialog.current?.showModal();
                       }}
-                    >
-                      <Trash2 size={15} />
-                      删除
-                    </button>
+                    />
                   )}
               </div>
             </section>
