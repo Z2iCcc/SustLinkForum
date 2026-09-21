@@ -21,6 +21,7 @@ import {
   unreadMessageCount,
 } from "./model";
 import type { Notice } from "../types";
+import { ChatEntryLink } from "./navigation";
 
 function Unread({ count }: { count: number }) {
   return count > 0 ? (
@@ -54,7 +55,8 @@ function ClassmatePicker() {
       </label>
       <div className="classmate-results">
         {users.map((user) => (
-          <Link
+          <ChatEntryLink
+            source="messages"
             className="classmate-choice"
             key={user.id}
             to={"/messages/people/" + encodeURIComponent(user.id)}
@@ -65,7 +67,7 @@ function ClassmatePicker() {
               <small>{user.bio || "校园同学"}</small>
             </span>
             <MessageCircle size={16} aria-hidden="true" />
-          </Link>
+          </ChatEntryLink>
         ))}
         {!users.length && (
           <p className="message-empty">没有找到这位同学，换个昵称试试。</p>
@@ -106,7 +108,8 @@ export function ConversationList() {
       {entries.map((entry) => {
         const user = state.users.find((u) => u.id === entry.peerId);
         return (
-          <Link
+          <ChatEntryLink
+            source="messages"
             className={`conversation-row ${entry.unread ? "has-unread" : ""}`}
             to={entry.to}
             key={entry.key}
@@ -136,7 +139,7 @@ export function ConversationList() {
                 <Unread count={entry.unread} />
               </div>
             </div>
-          </Link>
+          </ChatEntryLink>
         );
       })}
       {!entries.length && (

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link, useSearchParams, useLocation, useNavigate } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import { ShoppingBag, SlidersHorizontal, MessageCircle } from 'lucide-react';
 import { useForum } from '../context';
 import { ME } from '../seed';
@@ -11,7 +11,7 @@ import { marketCategories } from '../publishing/model';
 import { addMarketExamples, marketPrice, priceLabel, setMarketPolicy } from './model';
 import campus from '../illustrations/campus.svg';
 import { readingScrollY } from '../scroll';
-import { listOriginFrom } from '../navigation';
+import { ChatEntryLink } from '../messaging/navigation';
 import { TopicReactions } from '../DetailActions';
 
 export function MarketImage({topic}: {topic:Topic}) {
@@ -43,6 +43,6 @@ export function MarketDetailContent({topic}:{topic:Topic}) {
   return <><div className="market-detail-price">{priceLabel(topic)}{topic.market?.status&&topic.market.status!=='active'&&<small>{topic.market.status==='sold'?'已售出':'已下架'}</small>}</div>{topic.market?.demoImage&&<div className="market-detail-photo"><MarketImage topic={topic}/></div>}<Attachments items={topic.attachments}/><PostBody body={topic.body}/><p className="market-handover">{[topic.publishing?.place,topic.publishing?.handover,topic.publishing?.negotiable?'可议价':''].filter(Boolean).join(' · ')}</p></>;
 }
 export function MarketActions({topic}:{topic:Topic}) {
-  const {state,update,requireLogin}=useForum();const location=useLocation();const navigate=useNavigate();
-  return <div className="market-detail-actions"><div className="post-actions detail-reactions"><TopicReactions topic={topic}/></div>{topic.authorId!==ME?<Link className="market-chat-link" to={'/messages/chat/'+topic.id} onClick={e=>{if(!requireLogin()){e.preventDefault();return}if(e.button===0&&!e.ctrlKey&&!e.metaKey&&!e.shiftKey&&!e.altKey){e.preventDefault();navigate('/messages/chat/'+topic.id,{state:{listOrigin:listOriginFrom(location),restoreTopicY:readingScrollY()}})}}}><MessageCircle size={16}/>聊一聊</Link>:state.loggedIn&&<fieldset className="market-policy" aria-label="留言权限">{[['everyone','所有人可留言'],['seller','仅卖家可留言']].map(([value,label])=><label key={value}><input type="radio" name="market-policy" checked={(topic.market?.commentPolicy??topic.publishing?.commentPolicy??'everyone')===value} onChange={()=>update(s=>setMarketPolicy(s,topic.id,value as 'everyone'|'seller'))}/>{label}</label>)}</fieldset>}</div>;
+  const {state,update,requireLogin}=useForum();
+  return <div className="market-detail-actions"><div className="post-actions detail-reactions"><TopicReactions topic={topic}/></div>{topic.authorId!==ME?<ChatEntryLink source="topic" className="market-chat-link" to={'/messages/chat/'+topic.id} onClick={e=>{if(!requireLogin())e.preventDefault()}}><MessageCircle size={16}/>聊一聊</ChatEntryLink>:state.loggedIn&&<fieldset className="market-policy" aria-label="留言权限">{[['everyone','所有人可留言'],['seller','仅卖家可留言']].map(([value,label])=><label key={value}><input type="radio" name="market-policy" checked={(topic.market?.commentPolicy??topic.publishing?.commentPolicy??'everyone')===value} onChange={()=>update(s=>setMarketPolicy(s,topic.id,value as 'everyone'|'seller'))}/>{label}</label>)}</fieldset>}</div>;
 }

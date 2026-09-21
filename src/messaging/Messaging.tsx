@@ -18,6 +18,7 @@ import {
 import { listOriginFrom } from "../navigation";
 import type { ForumState } from "../types";
 import { Avatar } from "../components";
+import { chatReturnTarget } from "./navigation";
 
 type ChatHistory = Pick<Conversation, "messages" | "draft" | "readAt">;
 
@@ -171,8 +172,8 @@ export function ChatPage() {
     <>
       <Link
         className="breadcrumb"
-        to={!direct && topic ? "/topic/" + id : "/messages"}
-        onClick={openProduct}
+        {...chatReturnTarget(location, topic?.id)}
+        replace
       >
         <ArrowLeft size={14} />
         返回
