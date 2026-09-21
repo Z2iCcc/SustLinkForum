@@ -64,25 +64,6 @@
   box-shadow: 0 0 0 4px oklch(73% .06 231 / .16);
 }
 
-/* Messages: compact vertical insets; automatic height keeps wrapped text usable. */
-.forum-app .messages-panel .market-conversations { padding: 16px 20px; }
-.messages-panel .market-conversations h2 { margin-bottom: 10px; }
-.messages-panel .market-conversations > a { padding: 10px 0; }
-.messages-panel .market-conversations > a > span { margin: 3px 0; }
-.messages-panel .market-conversations p {
-  line-height: 20px;
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
-  overflow: hidden;
-}
-.forum-app .messages-heading { padding-block: 16px; gap: 12px; flex-wrap: wrap; }
-.messages-heading .eyebrow { margin-bottom: 4px; }
-.messages-heading p:not(.eyebrow) { margin-top: 4px; }
-.messages-heading > .text-button { flex-shrink: 0; }
-.forum-app .messages-panel .notice-row { padding-block: 14px; gap: 12px; }
-.forum-app .messages-panel .notice-row :is(p, small) { margin-top: 3px; }
-
 /* Switch the grid and sidebars together at the document-scroll breakpoint.
    The legacy 720px component rules must not leave a sidebar-width column at 721–760px. */
 @media (max-width: 760px) {

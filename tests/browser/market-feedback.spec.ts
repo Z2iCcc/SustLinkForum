@@ -19,21 +19,25 @@ test('reading notices and chats clears the bell; all-read also covers private ch
   await setup(page);
   const dot=page.locator('.notification-link i');
   await expect(dot).toBeVisible();
-  while(await page.locator('.notice-row.unread').count()) {
-    await page.locator('.notice-row.unread').first().click();
-    await page.locator('.notification-link').click();
+  for(const tab of ['replies','system']) {
+    await page.goto('/messages?tab='+tab);
+    while(await page.locator('.notice-row.unread').count()) {
+      await page.locator('.notice-row.unread').first().click();
+      await page.goto('/messages?tab='+tab);
+    }
   }
+  await page.goto('/messages');
   // Only the private chat remains unread; the all-read action must stay enabled.
   await expect(page.locator('.notification-link')).toHaveAccessibleName('消息，1 条未读');
   await expect(page.getByRole('button',{name:'全部已读'})).toBeEnabled();
-  await page.locator('.market-conversations > a').click();
+  await page.locator('.conversation-list > a').click();
   await expect(dot).toHaveCount(0);
   await page.reload();
   await expect(dot).toHaveCount(0);
   await setup(page);
   await page.getByRole('button',{name:'全部已读'}).click();
   await expect(dot).toHaveCount(0);
-  await expect(page.locator('.notice-row.unread, .chat-unread')).toHaveCount(0);
+  await expect(page.locator('.notice-row.unread, .message-unread')).toHaveCount(0);
   await page.reload();
   await expect(dot).toHaveCount(0);
   await expect(page.getByRole('button',{name:'全部已读'})).toBeDisabled();

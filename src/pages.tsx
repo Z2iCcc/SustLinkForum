@@ -1,8 +1,8 @@
 import { MarketHome, MarketDetailContent, MarketActions } from "./market/Market";
 import { canComment } from "./market/model";
 import { DetailAction, TopicReactions } from "./DetailActions";
-import { ConversationList } from "./messaging/Messaging";
-import { markAllMessagesRead, unreadMessageCount } from "./messaging/model";
+import { MessageCenter } from "./messaging/MessageCenter";
+import { DirectMessageLink } from "./messaging/DirectMessageLink";
 import { readingScrollY, scrollReadingTo } from "./scroll";
 import { useEffect, useState, useRef, type FormEvent } from "react";
 import {
@@ -23,7 +23,6 @@ import {
   Eye,
   Send,
   Check,
-  Bell,
   Pencil,
   Sprout,
   Trash2,
@@ -471,6 +470,7 @@ export function TopicPage() {
             <div>
               <strong>{author.name}</strong>
               <span className="author-badge">{isMarket ? "卖家" : "楼主"}</span>
+              {!isMarket && <DirectMessageLink topic={topic} userId={topic.authorId} name={author.name} />}
               <small>
                 <time
                   dateTime={new Date(topic.createdAt).toISOString()}
@@ -535,6 +535,7 @@ export function TopicPage() {
                 <div>
                   <strong>{who.name}</strong>
                   {who.author && <span className="author-badge">楼主</span>}
+                  <DirectMessageLink topic={topic} userId={r.authorId} name={who.name} />
                   <small>
                     <time
                       dateTime={new Date(r.createdAt).toISOString()}
@@ -1034,74 +1035,8 @@ function LoginRequired() {
   );
 }
 export function Messages() {
-  const { state, update } = useForum();
-  if (!state.loggedIn) return <LoginRequired />;
-  return (
-    <section className="content-panel messages-panel">
-      <ConversationList />
-      <div className="page-heading messages-heading">
-        <div>
-          <p className="eyebrow">YOU HAVE A LITTLE MAIL</p>
-          <h1>消息</h1>
-          <p>每一次回应，都值得被看见。</p>
-        </div>
-        <button
-          className="text-button"
-          disabled={unreadMessageCount(state) === 0}
-          onClick={() => update(markAllMessagesRead)}
-        >
-          <Check size={15} />
-          全部已读
-        </button>
-      </div>
-      <p className="notification-demo">
-        以下为示例通知，不接收其他用户的真实消息。
-      </p>
-      {state.notices.map((n) => {
-        const topic = state.topics.find((t) => t.id === n.topicId);
-        const who =
-          topic && n.actorId ? identity(state, topic, n.actorId) : null;
-        return (
-          <Link
-            className={`notice-row ${n.read ? "" : "unread"}`}
-            key={n.id}
-            to={
-              topic
-                ? `/topic/${topic.id}${n.replyId ? `#${n.replyId}` : ""}`
-                : "/forum"
-            }
-            onClick={() =>
-              update((s) => ({
-                ...s,
-                notices: s.notices.map((item) =>
-                  item.id === n.id ? { ...item, read: true } : item,
-                ),
-              }))
-            }
-          >
-            <span className="notice-icon">
-              {n.kind === "reply" ? (
-                <MessageCircle size={20} />
-              ) : (
-                <Bell size={20} />
-              )}
-            </span>
-            <div>
-              <strong>
-                {n.kind === "reply"
-                  ? `${who?.name ?? "校园同学"} 回复了你的主题`
-                  : "欢迎来到 SustLink 校园社区"}
-              </strong>
-              <p>{topic?.title ?? "原主题已不可用"}</p>
-              <small>{relativeTime(n.createdAt)} · 示例通知</small>
-            </div>
-            {!n.read && <i className="unread-dot" />}
-            <ArrowUpRight size={15} />
-          </Link>
-        );
-      })}
-    </section>
-  );
+  const { state } = useForum();
+  return state.loggedIn ? <MessageCenter /> : <LoginRequired />;
 }
 export function Profile() {
   const { state, update, toast } = useForum();

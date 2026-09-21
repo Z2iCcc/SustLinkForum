@@ -58,7 +58,7 @@ export function ForumProvider({ children }: { children: ReactNode }) {
         setWarning(failure);
         setWarningDismissed(false);
         if (failure && options?.requirePersistence) {
-          toast("删除未保存，原内容仍保留。请检查浏览器存储后重试。");
+          toast("操作未保存，原内容仍保留。请检查浏览器存储后重试。");
           return false;
         }
         stateRef.current = next;

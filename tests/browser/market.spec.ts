@@ -71,7 +71,7 @@ test('chat product summary returns to details and restores unsent draft and chat
  await expect(page.locator('.market-detail')).toBeVisible();
  await page.locator('#forum-main > .breadcrumb').click();
  await expect(page).toHaveURL(/\/board\/market$/);
- await page.goto('/messages');await expect(page.locator('.market-conversations')).toContainText('[草稿] 明天下午可以吗');
+ await page.goto('/messages');await expect(page.locator('.conversation-list')).toContainText('[草稿] 明天下午可以吗');
 });
 
 test('chat returns through detail to the original market filters and reading position',async({page})=>{

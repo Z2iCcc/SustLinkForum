@@ -1629,19 +1629,6 @@ a.board-tag:hover {
 .compose-preview .post-body {
   margin-top: 17px;
 }
-.messages-heading {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-.notification-demo {
-  padding: 12px 28px;
-  font-size: 11px;
-  color: #93a4af;
-  background: #f8fafb;
-  border-top: 1px solid var(--line);
-  border-bottom: 1px solid var(--line);
-}
 .notice-row {
   display: flex;
   gap: 16px;
@@ -2383,7 +2370,6 @@ a.board-tag:hover {
 .forum-app .post-actions button,
 .forum-app .editor-footer > span,
 .forum-app .draft-status,
-.forum-app .notification-demo,
 .forum-app .search-filters {
   font-size: 13px;
 }

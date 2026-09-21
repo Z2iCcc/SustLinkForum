@@ -122,7 +122,7 @@ test("failed deletion persistence keeps the note and its interactions", async ({
     .getByRole("button", { name: "删除", exact: true })
     .click();
   await page.getByRole("button", { name: "确认删除", exact: true }).click();
-  await expect(page.getByRole("status")).toContainText("删除未保存");
+  await expect(page.getByRole("status")).toContainText("操作未保存");
   await expect(
     page.getByRole("dialog", { name: "是否确认删除笔记？" }),
   ).toBeVisible();

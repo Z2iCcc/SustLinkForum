@@ -23,6 +23,7 @@ import "./refinements.css";
 import "./market/market.css";
 import "./scroll-layout.css";
 import "./detail-actions.css";
+import "./messaging/messages.css";
 function App() {
   return (
     <BrowserRouter>
@@ -42,6 +43,7 @@ function App() {
             <Route path="/search" element={<SearchPage />} />
             <Route path="/messages" element={<Messages />} />
             <Route path="/messages/chat/:id" element={<ChatPage />} />
+            <Route path="/messages/people/:peerId" element={<ChatPage />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="*" element={<NotFound />} />
           </Route>

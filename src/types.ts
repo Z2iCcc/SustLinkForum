@@ -1,5 +1,5 @@
 import type { MarketData } from "./market/model";
-import type { Conversation } from "./messaging/model";
+import type { Conversation, DirectConversation } from "./messaging/model";
 import type { PublishingData } from "./publishing/model";
 export type BoardId =
   "life" | "study" | "lost" | "clubs" | "market" | "tree" | "notice";
@@ -55,7 +55,7 @@ export interface Reply {
 export type ReplySort = "oldest" | "newest" | "likes";
 export interface Notice {
   id: string;
-  kind: "reply" | "system";
+  kind: "reply" | "system" | "like" | "save";
   topicId: string;
   replyId?: string;
   actorId?: string;
@@ -72,6 +72,7 @@ export interface Draft {
 }
 export interface ForumState {
   conversations?: Conversation[];
+  directConversations?: DirectConversation[];
   publishDrafts?: Record<string, Draft>;
   version: 1;
   users: User[];

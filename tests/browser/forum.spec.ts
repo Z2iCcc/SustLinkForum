@@ -163,9 +163,9 @@ test("anonymous author information is masked in lists, floors, quotes and notifi
   await expect(
     page.locator(".reply-floor").last().locator(".quoted"),
   ).toContainText("树洞楼主");
-  await page.goto("/messages");
-  await expect(page.locator(".notice-row").last()).toContainText("树洞楼主");
-  await expect(page.locator(".notice-row").last()).not.toContainText(
+  await page.goto("/messages?tab=replies");
+  await expect(page.locator(".notice-row").first()).toContainText("树洞楼主");
+  await expect(page.locator(".notice-row").first()).not.toContainText(
     "晚风来信",
   );
 });

@@ -1,5 +1,5 @@
 import { canComment } from "./market/model.ts";
-import { validConversations } from "./messaging/model.ts";
+import { validConversations, validDirectConversations } from "./messaging/model.ts";
 import type {
   Attachment,
   Draft,
@@ -61,6 +61,7 @@ export function validState(value: unknown): value is ForumState {
   const num = (v: unknown) => typeof v === "number" && Number.isFinite(v);
   if (
     !validConversations(s.conversations) ||
+    !validDirectConversations(s.directConversations) ||
     s.version !== 1 ||
     typeof s.loggedIn !== "boolean" ||
     !Array.isArray(s.users) ||
@@ -134,7 +135,7 @@ export function validState(value: unknown): value is ForumState {
       (n) =>
         n &&
         str(n.id) &&
-        ["reply", "system"].includes(n.kind) &&
+        ["reply", "system", "like", "save"].includes(n.kind) &&
         str(n.topicId) &&
         typeof n.read === "boolean" &&
         num(n.createdAt),

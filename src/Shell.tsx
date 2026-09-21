@@ -36,7 +36,7 @@ export function Shell() {
   const board = boards.find((b) => location.pathname === `/board/${b.id}`);
   const detailTopic = state.topics.find(t=>location.pathname==='/topic/'+t.id);
   const isMarket = board?.id==='market' || detailTopic?.boardId==='market' || location.pathname.startsWith('/messages/chat/');
-  const isChat = location.pathname.startsWith('/messages/chat/');
+  const isChat = location.pathname.startsWith('/messages/chat/') || location.pathname.startsWith('/messages/people/');
   function search(e: FormEvent) {
     e.preventDefault();
     navigate(`/search?q=${encodeURIComponent(query.trim())}`);

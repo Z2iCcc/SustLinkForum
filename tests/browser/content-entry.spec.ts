@@ -155,7 +155,7 @@ test("content containers navigate from empty padding while secondary actions kee
   await expect(page).toHaveURL("/topic/topic-1#mine");
   await page.locator("#mine .quoted").click({ position: { x: 8, y: 8 } });
   await expect(page).toHaveURL("/topic/topic-1#floor-1");
-  await page.goto("/messages");
+  await page.goto("/messages?tab=replies");
   await page
     .locator(".notice-row")
     .first()
