@@ -9,6 +9,18 @@ import { boards } from "./seed";
 import type { Topic } from "./types";
 import { mainScrollElement, readingScrollY, scrollReadingTo } from "./scroll";
 type Origin = { path: string; key: string; y: number; index: number };
+type ReturnOrigin = Origin & { state?: unknown };
+function returnOriginFrom(location: Location): ReturnOrigin | undefined {
+  const origin = location.state?.returnOrigin as ReturnOrigin | undefined;
+  return origin &&
+    typeof origin.path === "string" &&
+    /^\/(forum|board\/[^/?#]+|topic\/[^/?#]+|search|profile|messages(?:\/(?:chat|people)\/[^/?#]+)?)([?#].*)?$/.test(origin.path) &&
+    Number.isFinite(origin.y) &&
+    origin.y >= 0 &&
+    Number.isInteger(origin.index)
+    ? origin
+    : undefined;
+}
 export function profileOriginFrom(location: Location): Origin | undefined {
   const origin = location.state?.profileOrigin as Origin | undefined;
   return origin &&
@@ -20,13 +32,30 @@ export function profileOriginFrom(location: Location): Origin | undefined {
 export function useTopicExit(boardId?: string) {
   const location = useLocation(),
     navigate = useNavigate();
+  const returnOrigin = returnOriginFrom(location);
   const profileOrigin = profileOriginFrom(location);
   const listOrigin = listOriginFrom(location);
   // Market's visible return path is always detail -> market, never back to chat.
-  const origin = boardId === "market"
-    ? (listOrigin?.path.match(/^\/board\/market([?#]|$)/) ? listOrigin : undefined)
-    : profileOrigin ?? listOrigin;
+  const origin =
+    boardId === "market"
+      ? listOrigin?.path.match(/^\/board\/market([?#]|$)/)
+        ? listOrigin
+        : undefined
+      : (profileOrigin ?? listOrigin);
   function exit() {
+    if (returnOrigin) {
+      positions.set(returnOrigin.key, returnOrigin.y);
+      if (window.history.state?.idx === returnOrigin.index + 1) navigate(-1);
+      else
+        navigate(returnOrigin.path, {
+          replace: true,
+          state: {
+            ...((returnOrigin.state as object) ?? {}),
+            restoreScroll: returnOrigin.y,
+          },
+        });
+      return;
+    }
     if (!origin) {
       navigate(`/board/${boardId}`, { replace: true });
       return;
@@ -42,12 +71,14 @@ export function useTopicExit(boardId?: string) {
   return {
     exit,
     fromProfile: !!profileOrigin,
-    hasOrigin: !!origin,
-    sourceName: profileOrigin
-      ? "个人主页"
-      : origin
-        ? composeSourceName(origin.path)
-        : "",
+    hasOrigin: !!returnOrigin || !!origin,
+    sourceName: returnOrigin
+      ? composeSourceName(returnOrigin.path)
+      : profileOrigin
+        ? "个人主页"
+        : origin
+          ? composeSourceName(origin.path)
+          : "",
   };
 }
 export function listOriginFrom(location: Location): Origin | undefined {
@@ -101,7 +132,8 @@ export function composeSourceName(path: string, topics: Topic[] = []) {
   const board = boards.find((item) => url.pathname === `/board/${item.id}`);
   if (board) return board.name;
   if (url.pathname === "/search") return "搜索结果";
-  if (url.pathname === "/messages") return "消息中心";
+  if (url.pathname === "/messages")
+    return url.searchParams.get("tab") === "system" ? "系统通知" : "消息中心";
   if (url.pathname === "/profile")
     return url.searchParams.get("tab") === "saves"
       ? "收藏"
@@ -131,7 +163,10 @@ export function RouteEffects() {
         positions.set(currentKey.current, readingScrollY());
       }
     };
-    document.addEventListener("scroll", remember, { passive: true, capture: true });
+    document.addEventListener("scroll", remember, {
+      passive: true,
+      capture: true,
+    });
     return () => {
       history.scrollRestoration = previous;
       document.removeEventListener("scroll", remember, true);

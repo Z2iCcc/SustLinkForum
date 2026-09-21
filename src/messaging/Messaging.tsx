@@ -19,6 +19,7 @@ import { listOriginFrom } from "../navigation";
 import type { ForumState } from "../types";
 import { Avatar } from "../components";
 import { chatReturnTarget } from "./navigation";
+import { captureReturnOrigin } from "./navigation";
 
 type ChatHistory = Pick<Conversation, "messages" | "draft" | "readAt">;
 
@@ -132,6 +133,7 @@ export function ChatPage() {
     event.preventDefault();
     navigate("/topic/" + id, {
       state: {
+        returnOrigin: captureReturnOrigin(location),
         listOrigin: listOriginFrom(location),
         restoreScroll: location.state?.restoreTopicY ?? 0,
       },

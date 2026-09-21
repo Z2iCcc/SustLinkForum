@@ -9,6 +9,53 @@ import { listOriginFrom } from "../navigation";
 import { readingScrollY } from "../scroll";
 
 type ChatOrigin = { kind: "messages" | "topic"; path: string; y: number };
+export type ReturnOrigin = {
+  path: string;
+  key: string;
+  y: number;
+  index: number;
+  state?: unknown;
+};
+
+export function captureReturnOrigin(location: Location): ReturnOrigin {
+  return {
+    path: location.pathname + location.search + location.hash,
+    key: location.key,
+    y: readingScrollY(),
+    index: window.history.state?.idx ?? 0,
+    state: location.state,
+  };
+}
+
+export function SourceLink({ onClick, ...props }: LinkProps) {
+  const location = useLocation();
+  const navigate = useNavigate();
+  return (
+    <Link
+      {...props}
+      onClick={(event) => {
+        onClick?.(event);
+        if (
+          event.defaultPrevented ||
+          (props.target && props.target !== "_self") ||
+          event.button !== 0 ||
+          event.ctrlKey ||
+          event.metaKey ||
+          event.shiftKey ||
+          event.altKey
+        )
+          return;
+        event.preventDefault();
+        navigate(props.to, {
+          state: {
+            ...props.state,
+            returnOrigin: captureReturnOrigin(location),
+          },
+        });
+      }}
+    />
+  );
+}
 
 // Entry context belongs to this history entry, never to the shared conversation.
 export function ChatEntryLink({

@@ -1,4 +1,8 @@
-import { MarketHome, MarketDetailContent, MarketActions } from "./market/Market";
+import {
+  MarketHome,
+  MarketDetailContent,
+  MarketActions,
+} from "./market/Market";
 import { canComment } from "./market/model";
 import { DetailAction, TopicReactions } from "./DetailActions";
 import { MessageCenter } from "./messaging/MessageCenter";
@@ -118,10 +122,16 @@ export function ForumHome() {
     next.set(key, value);
     if (key !== "page") next.delete("page");
     // Sorting changes the list in place; pagination still starts at the top.
-    setParams(next, key === "sort" ? { state: { restoreScroll: readingScrollY() } } : undefined);
+    setParams(
+      next,
+      key === "sort"
+        ? { state: { restoreScroll: readingScrollY() } }
+        : undefined,
+    );
   }
   if (boardId && !board) return <NotFound />;
-  if (boardId === "market") return <MarketHome />;
+  if (boardId === "market" || (!boardId && filterBoard === "market"))
+    return <MarketHome />;
   return (
     <>
       <div className={`forum-banner ${board ? "board-banner" : ""}`}>
@@ -443,7 +453,9 @@ export function TopicPage() {
           {isMarket ? "返回" : board.name}
         </Link>
       )}
-      <article className={`content-panel topic-detail ${isMarket ? "market-detail" : ""}`}>
+      <article
+        className={`content-panel topic-detail ${isMarket ? "market-detail" : ""}`}
+      >
         <header className="detail-heading">
           <div className="detail-tags">
             <span className="board-tag" style={{ color: board.color }}>
@@ -470,7 +482,13 @@ export function TopicPage() {
             <div>
               <strong>{author.name}</strong>
               <span className="author-badge">{isMarket ? "卖家" : "楼主"}</span>
-              {!isMarket && <DirectMessageLink topic={topic} userId={topic.authorId} name={author.name} />}
+              {!isMarket && (
+                <DirectMessageLink
+                  topic={topic}
+                  userId={topic.authorId}
+                  name={author.name}
+                />
+              )}
               <small>
                 <time
                   dateTime={new Date(topic.createdAt).toISOString()}
@@ -482,14 +500,30 @@ export function TopicPage() {
             </div>
             <span className="floor-number">#1</span>
           </div>
-          {isMarket ? <MarketDetailContent topic={topic}/> : <><PostBody body={topic.body}/><Attachments items={topic.attachments} /></>}
-          {isMarket && <MarketActions topic={topic}/>}
+          {isMarket ? (
+            <MarketDetailContent topic={topic} />
+          ) : (
+            <>
+              <PostBody body={topic.body} />
+              <Attachments items={topic.attachments} />
+            </>
+          )}
+          {isMarket && <MarketActions topic={topic} />}
           <div className="post-actions">
-            {!isMarket && <><TopicReactions topic={topic}/>
-            <DetailAction icon={Quote} label="引用" onClick={() => quote(topic.id)} />
-            </>}
+            {!isMarket && (
+              <>
+                <TopicReactions topic={topic} />
+                <DetailAction
+                  icon={Quote}
+                  label="引用"
+                  onClick={() => quote(topic.id)}
+                />
+              </>
+            )}
             {state.loggedIn && topic.authorId === ME && (
-              <DetailAction icon={Trash2} label="删除"
+              <DetailAction
+                icon={Trash2}
+                label="删除"
                 className="delete-note"
                 onClick={() => {
                   setDeleteTarget(null);
@@ -535,7 +569,6 @@ export function TopicPage() {
                 <div>
                   <strong>{who.name}</strong>
                   {who.author && <span className="author-badge">楼主</span>}
-                  <DirectMessageLink topic={topic} userId={r.authorId} name={who.name} />
                   <small>
                     <time
                       dateTime={new Date(r.createdAt).toISOString()}
@@ -548,10 +581,11 @@ export function TopicPage() {
                 <span className="floor-number">#{floor}</span>
               </div>
               {r.quoteId && <QuoteBlock topic={topic} quoteId={r.quoteId} />}
-              <PostBody body={r.body}/>
+              <PostBody body={r.body} />
               <Attachments items={r.attachments} />
               <div className="reply-actions post-actions">
-                <DetailAction icon={Heart}
+                <DetailAction
+                  icon={Heart}
                   className={`reaction-like ${state.replyLikes?.includes(r.id) ? "is-active" : ""}`}
                   label={`点赞回复 #${floor}，${replyLikeCount(state, r)} 个赞`}
                   aria-pressed={state.replyLikes?.includes(r.id) ?? false}
@@ -559,14 +593,18 @@ export function TopicPage() {
                     if (requireLogin()) update((s) => toggleReplyLike(s, r.id));
                   }}
                 />
-                <DetailAction icon={Quote} label="引用回复"
+                <DetailAction
+                  icon={Quote}
+                  label="引用回复"
                   className="reply-quote text-button"
                   disabled={!replyAllowed}
                   onClick={() => quote(r.id)}
                 />
                 {state.loggedIn &&
                   (r.authorId === ME || topic.authorId === ME) && (
-                    <DetailAction icon={Trash2} label="删除"
+                    <DetailAction
+                      icon={Trash2}
+                      label="删除"
                       className="delete-note"
                       onClick={() => {
                         setDeleteTarget(r.id);
@@ -578,72 +616,82 @@ export function TopicPage() {
             </section>
           );
         })}
-        {replyAllowed ? <form className="reply-editor" onSubmit={submit}>
-          <h3>
-            {isMarket ? "向卖家留言" : topic.boardId === "tree" ? "留下一条匿名回复" : "加入这场讨论"}
-          </h3>
-          {quoteId && (
-            <div className="reply-quote-preview">
-              <QuoteBlock topic={topic} quoteId={quoteId} />
-              <button
-                type="button"
-                className="icon-button"
-                aria-label="取消引用"
-                onClick={() => setQuoteId(undefined)}
-              >
-                <X size={15} />
-              </button>
-            </div>
-          )}
-          <textarea
-            ref={input}
-            aria-label="回复内容"
-            value={reply}
-            onChange={(e) => {
-              setReply(e.target.value);
-              setError("");
-            }}
-            maxLength={3000}
-            placeholder={
-              state.loggedIn
-                ? "分享你的想法，友善交流…"
-                : "先写下想法，登录演示账号后即可回复…"
-            }
-          />
-          <UploadPicker
-            label="回复"
-            items={replyFiles}
-            onAdd={(files) =>
-              setReplyFiles((current) => [...current, ...files])
-            }
-            onRemove={(id) =>
-              setReplyFiles((current) =>
-                current.filter((file) => file.id !== id),
-              )
-            }
-            onBusy={setUploading}
-            disabled={!state.loggedIn}
-          />
-          {error && (
-            <p className="form-error" role="alert">
-              {error}
-            </p>
-          )}
-          <div className="editor-footer">
-            <span>{reply.length} / 3000 · 仅本地保存</span>
-            {state.loggedIn ? (
-              <button className="primary" disabled={uploading}>
-                <Send size={15} />
-                发布回复
-              </button>
-            ) : (
-              <button className="primary" type="button" onClick={login}>
-                登录后回复
-                <ArrowUpRight size={15} />
-              </button>
+        {replyAllowed ? (
+          <form className="reply-editor" onSubmit={submit}>
+            <h3>
+              {isMarket
+                ? "向卖家留言"
+                : topic.boardId === "tree"
+                  ? "留下一条匿名回复"
+                  : "加入这场讨论"}
+            </h3>
+            {quoteId && (
+              <div className="reply-quote-preview">
+                <QuoteBlock topic={topic} quoteId={quoteId} />
+                <button
+                  type="button"
+                  className="icon-button"
+                  aria-label="取消引用"
+                  onClick={() => setQuoteId(undefined)}
+                >
+                  <X size={15} />
+                </button>
+              </div>
             )}
-          </div>
-        </form> : <p className="market-comments-closed">卖家已关闭公开留言，可通过「聊一聊」咨询。</p>}
+            <textarea
+              ref={input}
+              aria-label="回复内容"
+              value={reply}
+              onChange={(e) => {
+                setReply(e.target.value);
+                setError("");
+              }}
+              maxLength={3000}
+              placeholder={
+                state.loggedIn
+                  ? "分享你的想法，友善交流…"
+                  : "先写下想法，登录演示账号后即可回复…"
+              }
+            />
+            <UploadPicker
+              label="回复"
+              items={replyFiles}
+              onAdd={(files) =>
+                setReplyFiles((current) => [...current, ...files])
+              }
+              onRemove={(id) =>
+                setReplyFiles((current) =>
+                  current.filter((file) => file.id !== id),
+                )
+              }
+              onBusy={setUploading}
+              disabled={!state.loggedIn}
+            />
+            {error && (
+              <p className="form-error" role="alert">
+                {error}
+              </p>
+            )}
+            <div className="editor-footer">
+              <span>{reply.length} / 3000 · 仅本地保存</span>
+              {state.loggedIn ? (
+                <button className="primary" disabled={uploading}>
+                  <Send size={15} />
+                  发布回复
+                </button>
+              ) : (
+                <button className="primary" type="button" onClick={login}>
+                  登录后回复
+                  <ArrowUpRight size={15} />
+                </button>
+              )}
+            </div>
+          </form>
+        ) : (
+          <p className="market-comments-closed">
+            卖家已关闭公开留言，可通过「聊一聊」咨询。
+          </p>
+        )}
         <dialog
           ref={deleteDialog}
           className="delete-dialog"

@@ -22,6 +22,7 @@ import {
 } from "./model";
 import type { Notice } from "../types";
 import { ChatEntryLink } from "./navigation";
+import { SourceLink } from "./navigation";
 
 function Unread({ count }: { count: number }) {
   return count > 0 ? (
@@ -173,7 +174,7 @@ function NoticeList({ notices }: { notices: Notice[] }) {
               ? "收藏了你的主题"
               : "赞了你的主题";
         return (
-          <Link
+          <SourceLink
             className={`notice-row ${n.read ? "" : "unread"}`}
             key={n.id}
             to={
@@ -204,7 +205,7 @@ function NoticeList({ notices }: { notices: Notice[] }) {
             </div>
             {!n.read && <i className="unread-dot" aria-label="未读" />}
             <ArrowUpRight size={15} aria-hidden="true" />
-          </Link>
+          </SourceLink>
         );
       })}
     </div>

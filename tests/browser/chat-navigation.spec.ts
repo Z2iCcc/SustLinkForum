@@ -101,3 +101,39 @@ test("browser back and forward retain the inbox entry for a product conversation
   await page.getByRole("link", { name: "返回", exact: true }).click();
   await expect(page).toHaveURL(/\/messages$/);
 });
+
+test("all-discussions market filter uses the same image card layout as the market board", async ({
+  page,
+}) => {
+  await setup(page);
+  await page.goto("/forum?board=market");
+  await expect(page.locator(".market-grid")).toBeVisible();
+  await expect(
+    page.locator(".market-grid .market-photo").first(),
+  ).toBeVisible();
+  await expect(page.locator(".topic-list")).toHaveCount(0);
+});
+
+test("system notification detail returns to the system notification list", async ({
+  page,
+}) => {
+  await setup(page);
+  await page.goto("/messages?tab=system");
+  const notice = page.locator(".notice-row").first();
+  const href = await notice.getAttribute("href");
+  await notice.click();
+  await expect(page).toHaveURL(
+    new RegExp(href!.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")),
+  );
+  await expect(
+    page.getByRole("button", { name: "系统通知", exact: true }),
+  ).toBeVisible();
+  await page.getByRole("button", { name: "系统通知", exact: true }).click();
+  await expect(page).toHaveURL(/\/messages\?tab=system$/);
+});
+
+test("reply author rows do not expose a separate private-chat action", async ({ page }) => {
+  await setup(page);
+  await page.goto("/topic/topic-5");
+  await expect(page.locator(".reply-floor .author-chat-link")).toHaveCount(0);
+});
